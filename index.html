@@ -147,7 +147,14 @@ footer a{color:inherit}
 
 <style>
 [hidden]{display:none!important}
-.stylebar{display:flex;gap:10px;align-items:center;font-size:13.5px;color:var(--muted)}
+.stylebar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}
+.stylebar .lang{margin-left:auto}
+.feedback p{margin:0 0 12px;max-width:62ch}
+.mailrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.mail{font:700 16px/1.2 var(--mono);color:var(--ink);text-decoration:none;border-bottom:2px solid var(--accent);padding-bottom:2px;user-select:all;word-break:break-all}
+.copy{appearance:none;border:1.5px solid var(--line);background:var(--chip);color:var(--ink);font:600 13.5px/1 "Onest",sans-serif;padding:9px 14px;border-radius:999px;cursor:pointer}
+.copy:hover{border-color:var(--muted)}
+.copy:focus-visible,.mail:focus-visible{outline:3px solid var(--press);outline-offset:2px}
 .seg.mini{display:inline-grid;grid-template-columns:auto auto}
 .seg.mini button{padding:7px 14px}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1.5px solid var(--line);padding-bottom:0}
@@ -195,6 +202,8 @@ footer a{color:inherit}
 .bank{font:800 13px/1 "JetBrains Mono",monospace;background:var(--ink);color:var(--bg);padding:6px 9px;border-radius:6px}
 </style>
 
+<div id="app"></div>
+<template id="tpl-ru">
 <div class="wrap">
   <header>
     <div class="brand"><b>X-T30</b> + XF 18–55 мм f/2,8–4</div>
@@ -203,7 +212,8 @@ footer a{color:inherit}
   </header>
 
   <div class="stylebar"><span>Вид камеры:</span><div class="seg mini" id="style" role="group" aria-label="Вид камеры">
-    <button type="button" id="st-draw" data-v="draw">Рисунки</button><button type="button" id="st-photo" data-v="photo">Фото</button></div></div>
+    <button type="button" id="st-draw" data-v="draw">Рисунки</button><button type="button" id="st-photo" data-v="photo">Фото</button></div>
+    <div class="seg mini lang" id="lang" role="group" aria-label="Язык / Language"><button type="button" id="lg-ru" data-lang="ru">RU</button><button type="button" id="lg-en" data-lang="en">EN</button></div></div>
   <nav class="tabs" role="tablist" aria-label="Разделы">
     <button class="tab" role="tab" id="tab-tool" data-tab="tool" aria-selected="true">Подсказчик</button>
     <button class="tab" role="tab" id="tab-map" data-tab="map" aria-selected="false">Карта камеры</button>
@@ -291,10 +301,126 @@ footer a{color:inherit}
   </section>
 
 
+  <section class="card feedback" aria-labelledby="fb-h">
+    <h3 id="fb-h"><i style="background:var(--accent)"></i>Нужна такая же инструкция для другой камеры?</h3>
+    <p>Напишите, какая у вас камера и объектив, — сделаю подсказчик в таком же формате. Замечания и найденные ошибки тоже присылайте.</p>
+    <div class="mailrow"><a class="mail" href="mailto:ivymnik@gmail.com">ivymnik@gmail.com</a><button type="button" class="copy" id="copy-mail" data-copy="ivymnik@gmail.com" data-done="Адрес скопирован">Скопировать адрес</button></div>
+  </section>
+
   <footer>Названия пунктов — по русскому меню X-T30 и русскому руководству пользователя; значения проверены по <a href="https://fujifilm-dsc.com/en/manual/x-t30/" target="_blank" rel="noopener">официальному руководству Fujifilm X-T30</a>. Не для X-T30 II: там другой набор плёнок.</footer>
 </div>
 
+</template>
+<template id="tpl-en">
+<div class="wrap">
+  <header>
+    <div class="brand"><b>X-T30</b> + XF 18–55 mm f/2.8–4</div>
+    <h1>Where you shoot — <span>what to set</span></h1>
+    <p class="lead">Pick the place, the light and the subject — on the right you'll see what to turn on the camera and what to choose in the menu. Menu names match your camera's English menu. All numbers are a starting point.</p>
+  </header>
+
+  <div class="stylebar"><span>Camera view:</span><div class="seg mini" id="style" role="group" aria-label="Camera view">
+    <button type="button" id="st-draw" data-v="draw">Drawings</button><button type="button" id="st-photo" data-v="photo">Photos</button></div>
+    <div class="seg mini lang" id="lang" role="group" aria-label="Language / Язык"><button type="button" id="lg-ru" data-lang="ru">RU</button><button type="button" id="lg-en" data-lang="en">EN</button></div></div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" id="tab-tool" data-tab="tool" aria-selected="true">Helper</button>
+    <button class="tab" role="tab" id="tab-map" data-tab="map" aria-selected="false">Camera map</button>
+    <button class="tab" role="tab" id="tab-menu" data-tab="menu" aria-selected="false">Camera menu</button>
+    <button class="tab" role="tab" id="tab-sets" data-tab="sets" aria-selected="false">Sets C1–C7</button>
+  </nav>
+
+  <!-- ============ TOOL ============ -->
+  <section id="pane-tool" role="tabpanel" aria-labelledby="tab-tool" class="wrap">
+  <div class="layout">
+    <form class="pick" id="pick" onsubmit="return false">
+      <fieldset>
+        <legend><span class="n">1</span>Where you shoot</legend>
+        <div class="seg" id="place" role="group" aria-label="Place">
+          <button type="button" id="pl-out" data-v="out">Outdoors</button>
+          <button type="button" id="pl-in" data-v="in">Indoors</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend><span class="n">2</span>What light</legend>
+        <div class="chips" id="where"></div>
+      </fieldset>
+      <fieldset>
+        <legend><span class="n">3</span>What you shoot</legend>
+        <div class="chips" id="what"></div>
+      </fieldset>
+      <fieldset>
+        <legend><span class="n">4</span>Tripod</legend>
+        <div class="seg" id="tripod" role="group" aria-label="Tripod">
+          <button type="button" id="tp-no" data-v="no">No tripod</button>
+          <button type="button" id="tp-yes" data-v="yes">On a tripod</button>
+        </div>
+      </fieldset>
+      <div class="lensbar"><div>Lens: <b>XF 18–55 mm f/2.8–4</b>. At 18 mm the widest aperture is f/2.8, at 55 mm it's f/4. The aperture ring has no numbers: the value is shown on the screen.</div></div>
+    </form>
+    <main class="result" id="result" aria-live="polite"></main>
+  </div>
+  </section>
+
+  <!-- ============ MAP ============ -->
+  <section id="pane-map" role="tabpanel" aria-labelledby="tab-map" class="mtab" hidden>
+    <div class="card"><p style="margin:0">Your camera in your own photos. Red marks what you <b>turn and switch</b>, blue marks the buttons you <b>press</b>.</p></div>
+    <div class="mapgrid" id="mapList"></div>
+  </section>
+
+  <!-- ============ MENU ============ -->
+  <section id="pane-menu" role="tabpanel" aria-labelledby="tab-menu" class="mtab" hidden>
+    <div class="card">
+      <p style="margin:0 0 10px">What to set in the X-T30 menu and what each option means. <b>Red rows</b> are important: set them once and forget. Blue ones are changed by the C1–C7 sets, so you don't need to adjust them one by one. Tap "All options" to see the other values of an item.</p>
+      <div class="legendrow"><span class="badge change">important</span><span class="badge keep">default</span><span class="badge preset">in sets C1–C7</span><span class="badge rare">don't touch</span><span class="badge info">info</span></div>
+    </div>
+    <div id="menuList" class="mtab"></div>
+  </section>
+
+  <!-- ============ SETS ============ -->
+  <section id="pane-sets" role="tabpanel" aria-labelledby="tab-sets" class="mtab" hidden>
+    <div class="card">
+      <h2 style="margin:0 0 8px;font:700 28px/1.02 var(--display);text-transform:uppercase">Sets C1–C7: color and ISO in one press</h2>
+      <p class="hint" style="font-size:14.5px;margin:0 0 12px">The camera stores 7 custom settings. A set holds only ISO and image settings (film, DR and D RANGE PRIORITY, tones, noise, white balance). A set does <b>not</b> change the dials, the focus lever, AF mode or shutter type — set those using the helper.</p>
+      <h3><i style="background:var(--press)"></i>How to create a set (once)</h3>
+      <ol class="howto">
+        <li><div><span class="path">MENU/OK<em>→</em>I.Q.<em>→</em>EDIT/SAVE CUSTOM SETTING</span></div></li>
+        <li><div>Choose the set number (1…7) and press MENU/OK.</div></li>
+        <li><div>Enter the values from the table below one by one.</div></li>
+        <li><div>Press DISP/BACK and confirm saving. You can rename the set, for example "PORTRAIT".</div></li>
+      </ol>
+      <h3 style="margin-top:14px"><i style="background:var(--ok)"></i>How to switch on a set while shooting</h3>
+      <p style="margin:0">Press <b>Q</b> → top-left tile (it currently shows <b>BASE</b>) → use the dial to choose C1…C7. BASE means the settings from the regular menu.</p>
+    </div>
+    <div class="card">
+      <div class="tscroll"><table class="sets" id="setsTable"></table></div>
+      <p class="hint" style="margin-top:10px">DYNAMIC RANGE 200% works only from ISO 320: at 200% the camera won't go below that ISO. The values are a starting point — tweak them to your taste.</p>
+    </div>
+    <div class="card">
+      <h3><i style="background:var(--press)"></i>AUTO1, AUTO2, AUTO3 — set up once</h3>
+    <p class="hint"><span class="path">MENU/OK<em>→</em>SHOOTING SETTING<em>→</em>ISO<em>→</em>AUTO1</span> — then set the lower and upper sensitivity and <b>MIN. SHUTTER SPEED</b>. "Minimum shutter speed" is the longest shutter speed down to which the camera keeps ISO low; with less light it raises ISO instead of lengthening the exposure. Same for AUTO2 and AUTO3. Your Q menu shows AUTO3 with a 12800 ceiling — for a clean image, lower it to 6400.</p>
+    <div class="tscroll"><table>
+      <tr><th>Preset</th><th>Lower ISO</th><th>Upper ISO</th><th>MIN. SHUTTER SPEED</th><th>What for</th></tr>
+      <tr><td class="m">AUTO1</td><td class="m">160</td><td class="m">6400</td><td class="m">1/125</td><td>people, portraits, everyday</td></tr>
+      <tr><td class="m">AUTO2</td><td class="m">160</td><td class="m">6400</td><td class="m">1/250</td><td>kids, pets, motion</td></tr>
+      <tr><td class="m">AUTO3</td><td class="m">160</td><td class="m">6400</td><td class="m">1/30</td><td>still subjects in low light (with OIS on)</td></tr>
+    </table></div>
+    <p class="hint" style="margin-top:8px">The OIS stabilizer in the 18–55 lens lets you hold 1/30 s even at 55 mm, but only for still subjects: it won't freeze moving people. The X-T30 body has no stabilizer.</p>
+  </div>
+  </section>
+
+
+  <section class="card feedback" aria-labelledby="fb-h">
+    <h3 id="fb-h"><i style="background:var(--accent)"></i>Want the same guide for another camera?</h3>
+    <p>Tell me which camera and lens you have — I'll make a helper in the same format. Comments and any mistakes you find are welcome too.</p>
+    <div class="mailrow"><a class="mail" href="mailto:ivymnik@gmail.com">ivymnik@gmail.com</a><button type="button" class="copy" id="copy-mail" data-copy="ivymnik@gmail.com" data-done="Address copied">Copy address</button></div>
+  </section>
+
+  <footer>Menu names follow the X-T30's English menu and the official English manual; values are checked against the <a href="https://fujifilm-dsc.com/en/manual/x-t30/" target="_blank" rel="noopener">official Fujifilm X-T30 manual</a>. Not for the X-T30 II: it has a different set of film simulations.</footer>
+</div>
+
+</template>
 <script>
+window.__APP_ru=function(){
 const WHERE = [
   {id:"sun", t:"Улица, солнце", l:"Яркое солнце", L:3},
   {id:"shade", t:"Улица, пасмурно или тень", l:"Пасмурно или тень", L:2},
@@ -1423,7 +1549,7 @@ function setTab(t){
 function save(){ try { localStorage.setItem("xt30-pick2", JSON.stringify(S)); } catch(e) {} }
 
 document.addEventListener("click", e=>{
-  const b = e.target.closest("button"); if (!b || b.disabled) return;
+  const b = e.target.closest("button"); if (!b || b.disabled || !b.closest("#app")) return;
   if (b.dataset.tab) { setTab(b.dataset.tab); save(); return; }
   if (b.dataset.k) S[b.dataset.k]=b.dataset.v;
   else if (b.parentElement.id==="tripod") S.tripod=b.dataset.v;
@@ -1431,9 +1557,1179 @@ document.addEventListener("click", e=>{
   else if (b.parentElement.id==="style") { S.style=b.dataset.v; save(); renderStyle(); renderTool(); renderMap(); return; }
   else return;
   save(); renderTool();
-});
+}, {signal: window.__AC.signal});
 function renderStyle(){ document.querySelectorAll("#style button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.v===S.style))); }
 renderStyle(); renderTool(); renderMap(); renderMenu(); renderSets(); setTab(S.tab);
+};
+</script>
+<script>
+window.__APP_en=function(){
+const WHERE = [
+  {id:"sun", t:"Outdoors, sunny", l:"Bright sun", L:3},
+  {id:"shade", t:"Outdoors, overcast or shade", l:"Overcast or shade", L:2},
+  {id:"golden", t:"Outdoors, sunset", l:"Sunset, golden hour", L:2},
+  {id:"dusk", t:"Outdoors, dusk", l:"Dusk, blue hour", L:1},
+  {id:"night", t:"Outdoors, night", l:"Night, street lights", L:0},
+  {id:"window", t:"Indoors, by a window in daytime", l:"Daytime, window light", L:2, indoor:true},
+  {id:"lamps", t:"Indoors, lamp light", l:"Evening, lamp light", L:1, indoor:true},
+  {id:"indark", t:"Indoors, dim light", l:"Dim light: candles, fairy lights", L:0, indoor:true},
+  {id:"studio", t:"Studio, flash lighting", l:"Studio light", L:2, indoor:true},
+];
+const WHAT = [
+  {id:"portrait", t:"Portrait"},
+  {id:"kids", t:"Kids"},
+  {id:"family", t:"Family photo"},
+  {id:"party", t:"Party, birthday — all evening"},
+  {id:"pets", t:"Pets"},
+  {id:"motion", t:"Sports, running, cycling"},
+  {id:"street", t:"Street, travel"},
+  {id:"land", t:"Landscape, city"},
+  {id:"water", t:"Water, waterfall, sea"},
+  {id:"things", t:"Objects, food"},
+  {id:"docs", t:"Documents"},
+  {id:"bw", t:"Black & white"},
+  {id:"stars", t:"Starry sky", onlyNight:true},
+];
+
+let S = {where:"sun", what:"portrait", tripod:"no", tab:"tool", style:"photo"};
+try { const s = JSON.parse(localStorage.getItem("xt30-pick2")||"null"); if (s) S = Object.assign(S, s); } catch(e) {}
+if (["tool","map","menu","sets"].includes(location.hash.slice(1))) S.tab = location.hash.slice(1);
+
+const SHUTTER = ["B","T","1","2","4","8","15","30","60","125","180X","250","500","1000","2000","4000","A"];
+const DRIVE = ["ADV","S","CL","CH","BKT"];
+function esc(s){return String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+
+/* ---------- pencil-style line drawings of the user's X-T30, traced over their photos ----------
+   Every drawing uses the same pixel space as the photo crops, so hotspots (PH[*].spots) line up. */
+const GR = "#2E333A", PAPER = "#FAFAF7", T1 = "#EEEFF1", T2 = "#D5D8DC", T3 = "#A9AEB5", RED_INK = "#D7261E";
+
+function defsArt(id){
+  return `<pattern id="h${id}" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+      <line x1="0" y1="0" x2="0" y2="12" stroke="${GR}" stroke-width="1.6" opacity=".5"/></pattern>
+    <pattern id="x${id}" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+      <line x1="0" y1="0" x2="0" y2="14" stroke="${GR}" stroke-width="1.5" opacity=".45"/><line x1="0" y1="0" x2="14" y2="0" stroke="${GR}" stroke-width="1.2" opacity=".3"/></pattern>
+    <pattern id="d${id}" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="1.6" fill="${GR}" opacity=".45"/><circle cx="12" cy="11" r="1.4" fill="${GR}" opacity=".35"/><circle cx="10" cy="3" r="1" fill="${GR}" opacity=".3"/></pattern>`;
+}
+const L = (x1,y1,x2,y2,w=2.5,c=GR) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+const R = (x,y,w,h,rx=0,fill="none",sw=4) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill}" stroke="${GR}" stroke-width="${sw}"/>`;
+const Cc = (cx,cy,r,fill="none",sw=4) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="${GR}" stroke-width="${sw}"/>`;
+const Tx = (x,y,t,fs=24,{w=700,c=GR,a="middle",rot=0,f="Onest,sans-serif"}={}) =>
+  `<text x="${x}" y="${y}" font-family="${f}" font-weight="${w}" font-size="${fs}" fill="${c}" text-anchor="${a}" dominant-baseline="central"${rot?` transform="rotate(${rot} ${x} ${y})"`:""}>${esc(t)}</text>`;
+function knurl(cx,cy,r,n,len=10,w=2){ let s=""; for(let i=0;i<n;i++){const a=i/n*2*Math.PI; s+=L(cx+r*Math.cos(a),cy+r*Math.sin(a),cx+(r-len)*Math.cos(a),cy+(r-len)*Math.sin(a),w);} return s; }
+function ribsV(x0,x1,y0,y1,step,w=2){ let s=""; for(let x=x0;x<=x1;x+=step) s+=L(x,y0,x,y1,w); return s; }
+function ribsH(x0,x1,y0,y1,step,w=2){ let s=""; for(let y=y0;y<=y1;y+=step) s+=L(x0,y,x1,y,w); return s; }
+function arcLabels(cx,cy,r,labels,t0,step,fs,style={}){
+  return labels.map((t,i)=>{const a=(t0+step*i)*Math.PI/180; return Tx(cx+r*Math.cos(a),cy+r*Math.sin(a),t,fs,Object.assign({c:t==="A"?RED_INK:GR},style));}).join("");
+}
+function dialFace(cx,cy,r){ return Cc(cx,cy,r,T1,4) + knurl(cx,cy,r,72,11,2) + Cc(cx,cy,r-14,PAPER,2.5); }
+
+const DRAW = {
+top(id){
+  let s="";
+  // lens: hood, zoom ring, focal band, aperture ring, barrel
+  s+=`<path d="M288,0 L296,150 Q302,208 350,210 L1036,210 Q1082,208 1088,150 L1096,0 Z" fill="url(#h${id})" stroke="${GR}" stroke-width="4"/>`;
+  s+=R(400,-10,560,160,10,T2,3.5)+ribsV(412,948,10,140,13,2.2);
+  s+=R(400,148,560,52,0,PAPER,3)+Tx(468,165,"35",30)+Tx(595,165,"23",30)+Tx(680,160,"18",30)+L(680,182,680,196,4);
+  s+=R(350,210,675,90,12,T2,4)+ribsV(362,1012,218,292,15,2.4);
+  s+=R(352,300,670,170,6,T1,4);
+  s+=R(418,340,90,86,12,PAPER,3)+Tx(463,366,"XF",32,{w:800})+L(430,388,496,388,2)+Tx(463,406,"ZOOM",15,{w:800});
+  s+=R(352,350,42,90,10,T2,3)+Tx(376,366,"A",22,{c:RED_INK,w:800});
+  s+=Tx(678,437,"18-55",32,{w:600})+`<rect x="670" y="457" width="16" height="9" fill="${RED_INK}"/>`;
+  // body top plate + EVF hump
+  s+=R(6,530,1584,402,58,T1,5);
+  s+=L(60,885,1540,885,2.5);
+  s+=`<path d="M392,930 L392,545 L410,468 L932,468 L950,545 L950,930" fill="${PAPER}" stroke="${GR}" stroke-width="4" stroke-linejoin="round"/>`;
+  s+=L(410,540,932,540,2);
+  s+=`<rect x="1578" y="578" width="22" height="62" rx="6" fill="${T2}" stroke="${GR}" stroke-width="3"/>`;
+  s+=`<ellipse cx="162" cy="888" rx="26" ry="12" fill="${T3}" stroke="${GR}" stroke-width="2.5"/><ellipse cx="232" cy="888" rx="26" ry="12" fill="${T3}" stroke="${GR}" stroke-width="2.5"/>`;
+  // hot shoe
+  s+=R(496,528,338,362,8,PAPER,4)+R(522,648,56,236,4,T2,3)+R(752,648,56,236,4,T2,3);
+  s+=`<path d="M612,705 Q657,668 702,705 L702,815 Q657,850 612,815 Z" fill="${T3}" stroke="${GR}" stroke-width="3"/>`;
+  s+=Cc(657,765,22,T1,3)+Cc(657,678,9,PAPER,2.5)+Cc(633,812,9,PAPER,2.5)+Cc(688,812,9,PAPER,2.5)+Cc(688,845,8,PAPER,2.5);
+  // drive dial + flash lever
+  s+=dialFace(220,700,135);
+  s+=arcLabels(220,700,96,["▭","▣","Adv2","Adv1","S","CL","CH","BKT1","BKT2"],-176,36,18,{w:700});
+  s+=Tx(160,780,"●",14)+L(360,690,398,690,5);
+  s+=`<path d="M4,738 L78,748 L72,776 L2,790 Z" fill="${T2}" stroke="${GR}" stroke-width="3.5" stroke-linejoin="round"/>`+Tx(34,764,"ϟ",26,{w:800});
+  s+=Tx(62,690,"ϕ",26,{w:500});
+  // shutter speed dial
+  s+=dialFace(1060,690,128);
+  s+=arcLabels(1060,690,90,["A","4000","2000","1000","500","250","180X","125","60","30","15","8","4","2","1","T","B"],180,-19.4,17,{w:700,f:"JetBrains Mono,monospace"});
+  s+=L(904,692,928,692,5);
+  // AUTO lever, ON/OFF labels
+  s+=`<rect x="1172" y="744" width="52" height="22" rx="8" fill="${T2}" stroke="${GR}" stroke-width="3" transform="rotate(-35 1198 755)"/>`;
+  s+=Tx(1241,790,"•",26)+Tx(1260,832,"• AUTO",22,{w:600});
+  s+=Tx(1200,718,"ON",18,{w:700})+Tx(1250,728,"OFF",18,{w:700});
+  // shutter button with ON/OFF collar, Fn
+  s+=Cc(1250,605,62,T1,4)+`<rect x="1252" y="536" width="46" height="18" rx="4" fill="${T2}" stroke="${GR}" stroke-width="2.5"/>`+ribsV(1260,1292,539,551,6,1.6);
+  s+=Cc(1250,605,42,PAPER,3.5)+Cc(1250,605,14,T2,2.5);
+  s+=Cc(1390,590,26,PAPER,3.5)+Tx(1390,591,"Fn",20,{w:800});
+  // exposure compensation dial
+  s+=dialFace(1410,755,118);
+  s+=arcLabels(1410,755,80,["C","+3","+2","+1","0","−1","−2","−3"],-120,-40,20,{w:700,f:"JetBrains Mono,monospace"});
+  return s;
+},
+rear(id){
+  let s="";
+  // dials seen from behind
+  s+=R(125,98,205,60,10,T1,3.5)+ribsV(135,322,102,154,9,2);
+  s+=R(830,120,170,48,10,T1,3.5)+ribsV(840,992,124,164,9,2);
+  s+=R(1120,165,175,42,10,T1,3.5)+ribsV(1130,1287,169,203,9,2);
+  s+=R(1005,150,55,30,6,T1,3);
+  // body
+  s+=R(40,156,1310,180,30,T1,5);
+  s+=`<path d="M362,336 L416,130 L470,46 L762,46 L814,130 L852,336" fill="${T1}" stroke="${GR}" stroke-width="4.5" stroke-linejoin="round"/>`;
+  s+=R(500,30,42,22,5,T2,3)+R(682,30,44,22,5,T2,3);
+  s+=R(40,330,1310,645,30,T1,5);
+  // screen
+  s+=R(74,340,978,636,16,T2,4)+R(100,356,936,594,8,`url(#x${id})`,3)+R(156,376,820,540,4,"none",2);
+  // grip leatherette
+  s+=`<path d="M1052,342 L1348,342 L1348,940 L1052,940 Z" fill="url(#d${id})" stroke="${GR}" stroke-width="2.5"/>`;
+  // EVF eyecup, diopter, view mode
+  s+=Cc(628,205,124,PAPER,5)+Cc(628,205,92,T2,3)+R(566,150,124,96,8,`url(#h${id})`,3)+R(586,268,90,42,6,T1,3);
+  s+=R(444,140,34,130,9,T2,3)+ribsH(448,474,152,258,10,2);
+  s+=R(782,190,46,60,9,PAPER,3)+Tx(805,208,"VIEW",11,{w:800})+Tx(805,230,"MODE",11,{w:800});
+  // buttons
+  s+=Cc(167,245,32,PAPER,3.5)+R(157,236,20,24,3,"none",2.5)+L(152,234,182,234,2.5)+L(163,242,163,254,2)+L(171,242,171,254,2);
+  s+=Cc(287,245,32,PAPER,3.5)+R(272,233,30,24,3,"none",2.5)+`<path d="M282,238 L294,245 L282,252 Z" fill="${GR}"/>`;
+  s+=Cc(941,263,32,PAPER,3.5)+Tx(941,264,"AE-L",14,{w:800});
+  s+=R(1008,243,147,48,14,T2,3.5)+ribsV(1020,1144,250,284,8,2.2);
+  s+=Cc(1230,270,32,PAPER,3.5)+Tx(1230,271,"AF-L",14,{w:800});
+  s+=Cc(1085,410,6,"#7ED957",2);
+  s+=Cc(1335,420,32,PAPER,3.5)+Tx(1335,421,"Q",30,{w:800});
+  s+=Cc(1120,600,50,T2,3.5)+Cc(1120,600,30,PAPER,3)+knurl(1120,600,30,24,7,1.6);
+  s+=Cc(1128,728,42,PAPER,3.5)+Tx(1128,716,"MENU",15,{w:800})+Tx(1128,740,"OK",15,{w:800});
+  s+=Cc(1128,860,42,PAPER,3.5)+Tx(1128,848,"DISP",15,{w:800})+Tx(1128,872,"BACK",15,{w:800});
+  return s;
+},
+lens(id){
+  let s="";
+  s+=R(60,-10,1040,195,14,`url(#h${id})`,4)+R(60,-10,1040,195,14,"none",4)+ribsV(75,1090,110,180,17,2.4);
+  s+=R(74,185,1024,78,0,PAPER,3.5)+Tx(660,226,"55",46,{w:800})+Tx(882,226,"35",42,{w:800})+Tx(1028,228,"23",34,{w:800})+Tx(1074,228,"18",26,{w:800})+L(1075,268,1075,298,4);
+  s+=R(74,304,1028,142,16,T2,4.5)+ribsV(90,1090,314,436,21,3);
+  s+=R(88,446,1004,262,10,T1,4.5);
+  s+=Tx(283,535,"OFF",34,{w:600})+Tx(362,512,"OIS",28,{w:600})+Tx(430,538,"ON",34,{w:600});
+  s+=`<rect x="338" y="539" width="12" height="12" fill="${GR}"/><rect x="368" y="539" width="12" height="12" fill="${GR}"/>`;
+  s+=R(262,565,168,76,34,PAPER,3.5)+R(356,572,28,56,6,T2,3);
+  s+=Cc(578,532,20,"none",3.5)+[0,60,120,180,240,300].map(a=>{const r=a*Math.PI/180;return L(578+7*Math.cos(r),532+7*Math.sin(r),578+19*Math.cos(r+0.9),532+19*Math.sin(r+0.9),2.5);}).join("");
+  s+=`<rect x="622" y="540" width="12" height="12" fill="${GR}"/><rect x="654" y="540" width="12" height="12" fill="${GR}"/>`+Tx(710,533,"A",40,{c:RED_INK,w:800});
+  s+=R(540,570,206,80,36,PAPER,3.5)+R(646,574,30,56,6,T2,3);
+  s+=R(820,515,130,126,20,PAPER,4)+Tx(885,556,"XF",46,{w:800})+L(836,592,934,592,2.5)+Tx(885,616,"ZOOM",22,{w:800});
+  s+=R(168,706,934,36,6,T1,3.5)+ribsH(180,1090,716,732,8,1.5);
+  return s;
+},
+grip(id){
+  let s="";
+  s+=R(270,55,130,70,10,T1,3.5)+R(298,80,58,34,5,T2,3)+ribsV(306,348,84,110,7,1.8);
+  s+=R(440,24,296,84,12,T1,3.5)+ribsV(452,724,30,102,9,2);
+  s+=`<path d="M750,112 L920,116 L920,242 L750,242 Z" fill="${T1}" stroke="${GR}" stroke-width="3.5"/>`;
+  s+=R(14,120,740,292,38,T1,5);
+  s+=R(300,244,226,78,16,PAPER,4)+R(316,256,194,54,8,T2,3)+ribsV(326,500,260,306,12,2.6);
+  s+=Cc(645,280,42,PAPER,4)+Cc(645,280,24,T3,3)+Cc(638,272,6,PAPER,0);
+  s+=`<path d="M16,410 L752,410 L752,760 L16,760 Z" fill="url(#d${id})" stroke="${GR}" stroke-width="3"/>`;
+  s+=`<path d="M921,118 C790,240 690,470 668,760 L921,760 Z" fill="${T2}" stroke="${GR}" stroke-width="4"/>`;
+  return s;
+},
+front(id, st={}){
+  let s="";
+  // dials behind the top edge
+  s+=R(135,150,165,24,6,T1,3)+ribsV(145,290,154,170,9,1.6);
+  s+=R(300,126,120,48,8,T1,3)+R(318,104,42,26,8,PAPER,3);
+  s+=R(426,102,204,72,10,T1,3.5)+ribsV(436,620,108,168,9,2);
+  s+=R(1134,105,216,69,10,T1,3.5)+ribsV(1144,1340,111,168,9,2);
+  // strap lugs
+  s+=Cc(93,330,24,PAPER,4)+Cc(93,330,10,"none",3)+Cc(1461,330,24,PAPER,4)+Cc(1461,330,10,"none",3);
+  // body: silver top plate, leatherette, bottom band
+  s+=R(118,168,1318,212,26,T1,5);
+  s+=`<path d="M118,378 L1436,378 L1436,928 L118,928 Z" fill="url(#d${id})" stroke="${GR}" stroke-width="4"/>`;
+  s+=R(118,922,1318,44,16,T1,4.5);
+  // viewfinder hump
+  s+=`<path d="M612,380 L612,172 L708,46 L1004,46 L1106,172 L1106,380" fill="${T1}" stroke="${GR}" stroke-width="4.5" stroke-linejoin="round"/>`;
+  s+=L(612,172,1106,172,2.5);
+  s+=Tx(860,222,"FUJIFILM",62,{w:800})+Tx(1238,280,"X-T30",52,{w:600});
+  // front command dial + AF-assist lamp
+  s+=R(315,254,141,56,16,PAPER,4)+R(327,263,117,38,8,T2,3)+ribsV(335,437,267,297,9,2.2);
+  s+=Cc(540,285,27,PAPER,4)+Cc(540,285,14,T3,3);
+  // lens mount
+  s+=Cc(858,615,300,T1,5)+Cc(858,615,242,T2,4)+Cc(858,615,222,"#6E737A",3);
+  s+=`<rect x="729" y="516" width="264" height="183" rx="4" fill="url(#x${id})" stroke="${GR}" stroke-width="3"/>`;
+  s+=[[720,360],[999,360],[579,609],[1140,609],[720,849],[999,849]].map(([x,y])=>Cc(x,y,14,PAPER,3)+L(x-8,y-8,x+8,y+8,2.2)).join("");
+  for(let i=0;i<10;i++){const a=(58+i*6.4)*Math.PI/180; s+=`<circle cx="${858+196*Math.cos(a)}" cy="${615+196*Math.sin(a)}" r="5" fill="${PAPER}"/>`;}
+  s+=`<circle cx="624" cy="456" r="11" fill="${RED_INK}"/>`+Cc(666,327,6,T3,2)+Cc(1053,327,6,T3,2);
+  // lens release button
+  s+=Cc(585,870,42,T2,4)+Cc(585,870,30,"none",2.5)+L(566,889,604,851,3);
+  // focus mode selector S / C / M
+  s+=Cc(1263,765,60,T3,4)+Cc(1263,765,38,"#6E737A",3)+knurl(1263,765,60,28,6,1.8);
+  s+=Tx(1214,712,"M",26,{w:800,rot:-38})+Tx(1240,694,"C",26,{w:800,rot:-16})+Tx(1266,690,"S",26,{w:800});
+  const ang={S:0,C:-24,M:-48}[st.focus||"S"];
+  s+=`<g transform="rotate(${ang} 1263 765)">${L(1263,720,1263,748,9,PAPER)}</g>`;
+  return s;
+},
+focus(id){
+  let s="";
+  s+=`<path d="M0,0 L120,0 Q215,300 195,560 Q170,720 70,860 L0,860 Z" fill="${T2}" stroke="${GR}" stroke-width="4"/>`;
+  s+=`<path d="M198,0 L572,0 L572,760 L140,760 Q190,640 198,520 Z" fill="url(#d${id})" stroke="${GR}" stroke-width="3"/>`;
+  s+=R(574,90,196,500,16,`url(#d${id})`,3.5);
+  s+=`<path d="M60,762 L572,762 Q572,846 520,846 L20,846" fill="${T1}" stroke="${GR}" stroke-width="4"/>`;
+  s+=Cc(280,580,100,T3,4.5)+Cc(280,580,64,"#6E737A",3)+knurl(280,580,100,40,8,2);
+  s+=Tx(196,494,"M",30,{w:800,rot:-44})+Tx(235,466,"C",30,{w:800,rot:-22})+Tx(280,456,"S",30,{w:800});
+  s+=L(280,508,280,546,12,PAPER)+L(280,625,280,640,8,PAPER);
+  return s;
+},
+};
+
+/* ---------- "How to take the shot": composition sketches + shooting advice per subject ---------- */
+/* ---------- "How to take the shot": pencil-drawn example frames (3:2, like the camera) ---------- */
+const SW = 450, SH = 300;
+const TN = ["#F4F3EF","#E2E1DC","#C9C9C5","#A7A8A8","#7F8184","#585B60","#34373C","#1F2226"];
+const f1 = n => +n.toFixed(1);
+const pts = a => a.map(p => f1(p[0]) + "," + f1(p[1])).join(" ");
+let pzS = 7; const rnd = () => (pzS = (pzS * 16807) % 2147483647, (pzS - 1) / 2147483646);
+const seed = s => { pzS = s; };
+
+function pzDefs(){
+  return `<defs>
+  <filter id="pzW" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="4" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <filter id="pzB" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter>
+  <filter id="pzB2" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.2"/></filter>
+  <filter id="pzBh" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="12 0.5"/></filter>
+  <filter id="pzN" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="11"/><feColorMatrix type="matrix" values="1.3 1.3 1.3 0 -1.25  1.3 1.3 1.3 0 -1.25  1.3 1.3 1.3 0 -1.25  0 0 0 0 1"/></filter>
+  <filter id="pzS" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" seed="5"/><feColorMatrix type="matrix" values="3 3 3 0 -4.2  3 3 3 0 -4.2  3 3 3 0 -4.2  0 0 0 0 1"/></filter>
+  <pattern id="pzh" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><line x1="1" y1="0" x2="1" y2="4" stroke="#15181c" stroke-width=".9" opacity=".2"/></pattern>
+  <pattern id="pzx" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-48)"><line x1="1" y1="0" x2="1" y2="5" stroke="#15181c" stroke-width=".8" opacity=".17"/></pattern>
+  <pattern id="pzl" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><line x1="1" y1="0" x2="1" y2="7" stroke="#15181c" stroke-width=".7" opacity=".13"/></pattern>
+  <pattern id="pzv" width="5" height="9" patternUnits="userSpaceOnUse"><line x1="1" y1="0" x2="1" y2="9" stroke="#ffffff" stroke-width=".9" opacity=".7"/></pattern>
+  <linearGradient id="pzSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${TN[1]}"/><stop offset="1" stop-color="${PAPER}"/></linearGradient>
+  <linearGradient id="pzNight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${TN[7]}"/><stop offset=".75" stop-color="${TN[6]}"/><stop offset="1" stop-color="${TN[5]}"/></linearGradient>
+  <linearGradient id="pzFace" x1="0" y1="0" x2="1" y2="0"><stop offset=".35" stop-color="${TN[0]}"/><stop offset="1" stop-color="${TN[3]}"/></linearGradient>
+  <linearGradient id="pzCup" x1="0" y1="0" x2="1" y2="0"><stop offset=".3" stop-color="#fff"/><stop offset="1" stop-color="${TN[2]}"/></linearGradient>
+  <radialGradient id="pzGlow"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".35" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <linearGradient id="pzWin" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <marker id="sa" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${RED_INK}"/></marker>
+  <clipPath id="pzC"><rect x="1" y="1" width="${SW-2}" height="${SH-2}" rx="6"/></clipPath></defs>`;
+}
+
+/* A drawn shape group: paper halo (separates overlapping figures) + tone + pencil hatching */
+function fig(parts, tone, o = {}){
+  const hw = o.hw ?? 3, hat = o.hatch ?? "url(#pzh)";
+  const one = (p, pass) => {
+    const c = pass === 0 ? PAPER : pass === 1 ? (p.c || tone) : hat;
+    if (p.l) return `<polyline points="${pts(p.l)}" fill="none" stroke="${c}" stroke-width="${p.w + (pass === 0 ? hw : 0)}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    return p.s.replace("/>", pass === 0 ? ` fill="${PAPER}" stroke="${PAPER}" stroke-width="${hw}" stroke-linejoin="round"/>` : ` fill="${c}"/>`);
+  };
+  const halo = o.halo === false ? "" : parts.map(p => one(p, 0)).join("");
+  const body = parts.map(p => one(p, 1)).join("");
+  const h = hat === "none" ? "" : parts.filter(p => !p.nh).map(p => one(p, 2)).join("");
+  return `<g filter="url(#pzW)"${o.op ? ` opacity="${o.op}"` : ""}>${halo}${body}${h}</g>`;
+}
+const Sp = (d, c, nh) => ({ s: `<path d="${d}"/>`, c, nh });
+const E = (cx, cy, rx, ry, c, nh) => ({ s: `<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}"/>`, c, nh });
+const Lm = (l, w, c) => ({ l, w, c });
+
+/* Human figure. o: kind adult|child, fem, hair short|long|bun, dress, pose stand|walk|sit, arms down|front|reach, tone */
+function human(x, yF, h, o = {}){
+  const ch = o.kind === "child", u = h / (ch ? 5.6 : 7.4);
+  const sit = o.pose === "sit", walk = o.pose === "walk";
+  const hipK = ch ? 2.95 : 3.85;
+  const top = sit ? yF - .4 * u - hipK * u : yF - h;
+  const Y = k => top + k * u;
+  const tone = o.tone || TN[4], skin = o.skin || (o.shade ? "url(#pzFace)" : TN[1]), hairC = o.hairC || TN[6];
+  const sw = (ch ? .8 : (o.fem ? .86 : 1.03)) * u * (walk ? .55 : 1);
+  const shY = Y(ch ? 1.25 : 1.36), waistY = Y(ch ? 2.45 : 2.9), hipY = Y(hipK);
+  const P = [];
+  const lw = (ch ? .52 : .5) * u, hx = .31 * u;
+  const legC = o.legs || (o.dress ? skin : TN[5]);
+  // legs
+  if (sit){
+    [-1, 1].forEach(s => { const kx = x + s * 1.2 * u, fx = x - s * .35 * u;
+      P.push(Lm([[x + s * hx, hipY], [kx, yF - .3 * u], [fx, yF - .2 * u]], lw, legC), E(fx - s * .15 * u, yF - .15 * u, .3 * u, .15 * u, TN[6])); });
+  } else if (walk){
+    P.push(Lm([[x, hipY], [x - .22 * u, Y(5.6)], [x - .75 * u, yF - .12 * u]], lw, TN[5]), E(x - .72 * u, yF - .07 * u, .3 * u, .12 * u, TN[6]));
+    P.push(Lm([[x, hipY], [x + .45 * u, Y(5.6)], [x + .7 * u, yF - .12 * u]], lw, legC), E(x + .85 * u, yF - .07 * u, .32 * u, .12 * u, TN[6]));
+  } else {
+    [-1, 1].forEach(s => { P.push(Lm([[x + s * hx, hipY], [x + s * hx * 1.05, (hipY + yF) / 2], [x + s * hx * 1.12, yF - .14 * u]], lw, legC),
+      E(x + s * hx * 1.25, yF - .08 * u, .3 * u, .13 * u, TN[6])); });
+  }
+  // long hair behind the head
+  const hxo = x + (o.turn || 0) * u;
+  if (o.hair === "long") P.push(Sp(`M${f1(hxo - .5 * u)},${f1(Y(1.75))} Q${f1(hxo - .62 * u)},${f1(Y(-.06))} ${f1(hxo)},${f1(Y(-.06))} Q${f1(hxo + .62 * u)},${f1(Y(-.06))} ${f1(hxo + .5 * u)},${f1(Y(1.75))} Z`, hairC));
+  // torso (+ dress)
+  const tor = `M${f1(x - sw)},${f1(shY + .28 * u)} Q${f1(x - sw)},${f1(shY)} ${f1(x - sw + .32 * u)},${f1(shY - .07 * u)} L${f1(x + sw - .32 * u)},${f1(shY - .07 * u)} Q${f1(x + sw)},${f1(shY)} ${f1(x + sw)},${f1(shY + .28 * u)} L${f1(x + sw * .8)},${f1(waistY)} L${f1(x + sw * .84)},${f1(hipY + .15 * u)} L${f1(x - sw * .84)},${f1(hipY + .15 * u)} L${f1(x - sw * .8)},${f1(waistY)} Z`;
+  P.push(Sp(`M${f1(x - .17 * u)},${f1(Y(.8))} L${f1(x + .17 * u)},${f1(Y(.8))} L${f1(x + .2 * u)},${f1(shY + .1 * u)} L${f1(x - .2 * u)},${f1(shY + .1 * u)} Z`, skin, 1));
+  P.push(Sp(tor, tone));
+  if (o.dress) P.push(Sp(`M${f1(x - sw * .78)},${f1(waistY)} L${f1(x + sw * .78)},${f1(waistY)} L${f1(x + sw * 1.18)},${f1(Y(ch ? 4.1 : 5.4))} L${f1(x - sw * 1.18)},${f1(Y(ch ? 4.1 : 5.4))} Z`, o.dressC || tone));
+  // arms
+  const aw = (ch ? .36 : .33) * u, armC = o.armC || tone;
+  const hand = (hx_, hy_) => E(hx_, hy_, .16 * u, .19 * u, skin, 1);
+  [-1, 1].forEach(s => {
+    const sx = x + s * (sw - .17 * u), sy = shY + .22 * u;
+    let a;
+    if (o.arms === "front") a = [[sx, sy], [x + s * (sw + .05 * u), Y(ch ? 2.2 : 2.7)], [x + s * .35 * u, Y(ch ? 2.6 : 3.3)]];
+    else if (o.arms === "reach" && s === 1) a = [[sx, sy], [x + sw + .5 * u, Y(ch ? 1.95 : 2.4)], [x + sw + 1.25 * u, Y(ch ? 2.25 : 2.8)]];
+    else if (walk) a = s < 0 ? [[x, sy], [x - .3 * u, Y(2.4)], [x - .5 * u, Y(3.3)]] : [[x, sy], [x + .25 * u, Y(2.45)], [x + .6 * u, Y(3.2)]];
+    else a = [[sx, sy], [x + s * (sw + .03 * u), Y(ch ? 2.25 : 2.75)], [x + s * (sw - .05 * u), Y(ch ? 3.05 : 3.8)]];
+    P.push(Lm(a, aw, armC), hand(a[2][0], a[2][1] + .08 * u));
+  });
+  // head
+  const hr = (ch ? .44 : .4) * u, hry = (ch ? .5 : .52) * u;
+  P.push(E(hxo, Y(.53), hr, hry, skin, 1));
+  // hair cap
+  if (o.hair !== "none"){
+    const cap = `M${f1(hxo - hr * 1.07)},${f1(Y(.62))} Q${f1(hxo - hr * 1.15)},${f1(Y(-.03))} ${f1(hxo)},${f1(Y(-.03))} Q${f1(hxo + hr * 1.15)},${f1(Y(-.03))} ${f1(hxo + hr * 1.07)},${f1(Y(.62))} Q${f1(hxo + hr * .7)},${f1(Y(.24))} ${f1(hxo + .05 * u)},${f1(Y(.26))} Q${f1(hxo - hr * .7)},${f1(Y(.2))} ${f1(hxo - hr * 1.07)},${f1(Y(.62))} Z`;
+    P.push(Sp(cap, hairC));
+    if (o.hair === "bun") P.push(E(hxo, Y(-.12), .24 * u, .2 * u, hairC));
+  }
+  return fig(P, tone, o);
+}
+
+/* Scenery helpers */
+const band = (pp, c, extra = "") => `<path d="M${pts(pp)} Z" fill="${c}" ${extra}/>`;
+function ridge(x0, x1, yBase, amp, n, s, bottom = SH){
+  seed(s); const p = [[x0, bottom]];
+  for (let i = 0; i <= n; i++){ const x = x0 + (x1 - x0) * i / n; p.push([x, yBase - amp * (.35 + .65 * Math.abs(Math.sin(i * 1.7 + s)) ) * (0.6 + .4 * rnd())]); }
+  p.push([x1, bottom]); return p;
+}
+function tree(x, y, s, c = TN[3]){
+  seed(Math.round(x * 7 + y));
+  const P = [Lm([[x, y], [x + 2 * s, y - 30 * s]], 6 * s, TN[5])];
+  for (let i = 0; i < 7; i++){ const a = i / 7 * Math.PI * 2; P.push(E(x + Math.cos(a) * 16 * s * (.7 + .5 * rnd()), y - 48 * s + Math.sin(a) * 14 * s, 15 * s, 13 * s, c)); }
+  P.push(E(x, y - 50 * s, 20 * s, 18 * s, c));
+  return fig(P, c, { halo: false });
+}
+const pine = (x, y, h, c = TN[6]) => fig([Sp(`M${x},${y - h} L${x + h * .16},${y - h * .62} L${x + h * .09},${y - h * .62} L${x + h * .25},${y - h * .25} L${x + h * .14},${y - h * .25} L${x + h * .32},${y - h * .04} L${x - h * .32},${y - h * .04} L${x - h * .14},${y - h * .25} L${x - h * .25},${y - h * .25} L${x - h * .09},${y - h * .62} L${x - h * .16},${y - h * .62} Z`, c), Lm([[x, y - h * .05], [x, y]], h * .05, c)], c, { halo: false, hatch: "none" });
+const blur = (s, f = "pzB") => `<g filter="url(#${f})">${s}</g>`;
+const note = (x, y, t, a = "start") => `<text x="${x}" y="${y}" font-family="Onest,sans-serif" font-size="13" font-weight="700" fill="${RED_INK}" text-anchor="${a}" paint-order="stroke" stroke="${PAPER}" stroke-width="4" stroke-linejoin="round">${esc(t)}</text>`;
+const arrowR = (x1, y1, x2, y2, curve) => curve
+  ? `<path d="M${x1},${y1} Q${curve[0]},${curve[1]} ${x2},${y2}" fill="none" stroke="${RED_INK}" stroke-width="2" marker-end="url(#sa)"/>`
+  : `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${RED_INK}" stroke-width="2" marker-end="url(#sa)"/>`;
+const redLine = (x1, y1, x2, y2, dash = "8 5") => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${RED_INK}" stroke-width="1.8" stroke-dasharray="${dash}"/>`;
+const redRing = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${RED_INK}" stroke-width="2.2"/>`;
+
+function scene(art, marks, o = {}){
+  const g = [SW / 3, 2 * SW / 3].map(x => `M${f1(x)},0 V${SH}`).concat([SH / 3, 2 * SH / 3].map(y => `M0,${y} H${SW}`)).join(" ");
+  return `<svg class="sk" viewBox="0 0 ${SW} ${SH}" role="img" aria-label="Example frame">${pzDefs()}
+  <g clip-path="url(#pzC)"><rect width="${SW}" height="${SH}" fill="${PAPER}"/>${art}
+    <rect width="${SW}" height="${SH}" filter="url(#pzN)" opacity="${o.grain ?? .07}" style="mix-blend-mode:multiply"/>
+    <rect width="${SW}" height="${SH}" filter="url(#pzS)" opacity="${o.spark ?? .15}" style="mix-blend-mode:screen"/>
+    <path d="${g}" stroke="${TN[7]}" stroke-opacity=".28" stroke-width="2" fill="none"/><path d="${g}" stroke="#fff" stroke-opacity=".85" stroke-width="1" stroke-dasharray="5 5" fill="none"/>
+  </g>${marks}<rect x="1" y="1" width="${SW - 2}" height="${SH - 2}" rx="6" fill="none" stroke="${GR}" stroke-width="2"/></svg>`;
+}
+
+/* ---- scenes ---- */
+function dog(ox, oy, s, c = TN[3]){
+  const X = v => f1(ox + v * s), Yd = v => f1(oy + v * s);
+  const P = [
+    Lm([[ox + 80 * s, oy - 6 * s], [ox + 108 * s, oy - 12 * s], [ox + 128 * s, oy - 26 * s]], 9 * s, c),
+    E(ox + 46 * s, oy - 42 * s, 46 * s, 42 * s, c),
+    Sp(`M${X(-34)},${Yd(-118)} Q${X(30)},${Yd(-120)} ${X(70)},${Yd(-58)} L${X(62)},${Yd(0)} L${X(-12)},${Yd(0)} Z`, c),
+    E(ox + 34 * s, oy - 6 * s, 26 * s, 8 * s, TN[4]),
+    E(ox - 16 * s, oy - 82 * s, 30 * s, 44 * s, c),
+    Lm([[ox - 30 * s, oy - 64 * s], [ox - 31 * s, oy - 4 * s]], 15 * s, c), Lm([[ox - 8 * s, oy - 64 * s], [ox - 6 * s, oy - 4 * s]], 15 * s, c),
+    E(ox - 34 * s, oy - 3 * s, 12 * s, 6 * s, TN[4]), E(ox - 4 * s, oy - 3 * s, 12 * s, 6 * s, TN[4]),
+    Sp(`M${X(-42)},${Yd(-104)} Q${X(-36)},${Yd(-150)} ${X(-6)},${Yd(-152)} L${X(14)},${Yd(-106)} Z`, c),
+    E(ox - 22 * s, oy - 160 * s, 31 * s, 27 * s, c),
+    E(ox - 50 * s, oy - 147 * s, 24 * s, 14 * s, c),
+    Sp(`M${X(-8)},${Yd(-181)} Q${X(16)},${Yd(-174)} ${X(15)},${Yd(-138)} Q${X(2)},${Yd(-126)} ${X(-10)},${Yd(-146)} Z`, TN[5]),
+    E(ox - 70 * s, oy - 150 * s, 6.5 * s, 5.5 * s, TN[7], 1),
+    Sp(`M${X(-66)},${Yd(-138)} Q${X(-52)},${Yd(-132)} ${X(-40)},${Yd(-138)}`, "none", 1),
+    E(ox - 33 * s, oy - 166 * s, 3.8 * s, 3.8 * s, TN[7], 1), E(ox - 34.2 * s, oy - 167.3 * s, 1.2 * s, 1.2 * s, "#fff", 1),
+  ];
+  return fig(P, c);
+}
+
+const SCN = {
+ portrait(){
+  const bg = blur(`<rect x="0" y="0" width="${SW}" height="${SH}" fill="${TN[2]}"/><rect x="-10" y="10" width="95" height="220" fill="#fff"/><rect x="36" y="10" width="7" height="220" fill="${TN[3]}"/>
+    <rect x="120" y="30" width="110" height="200" fill="${TN[3]}"/><rect x="120" y="92" width="110" height="6" fill="${TN[5]}"/><rect x="120" y="160" width="110" height="6" fill="${TN[5]}"/>
+    ${[[135,60,14],[165,70,10],[200,55,16],[140,130,12],[185,138,15],[215,125,9]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${TN[1]}"/>`).join("")}
+    <ellipse cx="400" cy="120" rx="60" ry="80" fill="${TN[3]}"/><rect x="0" y="230" width="${SW}" height="80" fill="${TN[3]}"/>`, "pzB") +
+    `<rect x="0" y="0" width="200" height="${SH}" fill="url(#pzWin)" opacity=".5"/>`;
+  return scene(bg + human(300, 900, 815, { fem: true, hair: "long", tone: TN[4], shade: true, turn: -.08 }),
+    redLine(170, 100, 450, 100) + note(446, 92, "eyes on the thirds line", "end") + arrowR(50, 150, 238, 110, [140, 150]) + note(8, 172, "soft window light") + note(8, 290, "background far away and blurred"));
+ },
+ kids(){
+  const room = `<rect width="${SW}" height="185" fill="${TN[1]}"/><rect y="185" width="${SW}" height="115" fill="${TN[2]}"/><path d="M0,185 H${SW}" stroke="${TN[4]}" stroke-width="3"/>` +
+    blur(`<rect x="250" y="95" width="200" height="90" rx="14" fill="${TN[3]}"/><rect x="262" y="70" width="176" height="50" rx="12" fill="${TN[3]}"/><rect x="20" y="30" width="70" height="90" fill="${TN[2]}" stroke="${TN[4]}" stroke-width="4"/>`, "pzB") +
+    `<path d="M0,230 L${SW},222 M0,262 L${SW},255" stroke="${TN[3]}" stroke-width="1" opacity=".6"/>`;
+  const blocks = fig([Sp("M250,266 h36 v-34 h-36 Z", TN[2]), Sp("M290,266 h36 v-34 h-36 Z", TN[4]), Sp("M268,232 h36 v-34 h-36 Z", TN[3]), Sp("M258,198 l22,-30 l22,30 Z", TN[5])], TN[3]);
+  const ball = fig([E(380, 248, 24, 24, TN[1])], TN[1]) + `<path d="M358,240 Q380,256 403,238 M372,226 Q386,250 378,272" stroke="${TN[5]}" stroke-width="2.5" fill="none" filter="url(#pzW)"/>`;
+  return scene(room + `<ellipse cx="150" cy="268" rx="80" ry="10" fill="${TN[3]}" opacity=".6" filter="url(#pzB2)"/>` + blocks + ball +
+    human(150, 268, 225, { kind: "child", pose: "sit", arms: "reach", hair: "short", tone: TN[3], legs: TN[5] }),
+    redLine(0, 148, 450, 148) + note(446, 140, "camera at the child's eye level", "end") + note(262, 290, "toys = story"));
+ },
+ family(){
+  const park = `<rect width="${SW}" height="${SH}" fill="url(#pzSky)"/>` + blur(tree(40, 200, 2.2, TN[2]) + tree(120, 190, 1.6, TN[2]) + tree(410, 205, 2.4, TN[2]) + tree(330, 190, 1.5, TN[2]) +
+    `<rect y="185" width="${SW}" height="120" fill="${TN[2]}"/>`, "pzB");
+  const back = human(148, 360, 305, { fem: true, hair: "long", tone: TN[3] }) + human(302, 360, 310, { fem: true, hair: "bun", tone: TN[4], dress: true, dressC: TN[4] }) + human(225, 368, 330, { tone: TN[5] });
+  const front = human(185, 322, 165, { kind: "child", fem: true, hair: "long", tone: TN[2], dress: true, dressC: TN[2] }) + human(265, 322, 160, { kind: "child", hair: "short", tone: TN[4] });
+  return scene(park + back + front,
+    `<polyline points="148,82 185,168 225,66 265,168 302,84" fill="none" stroke="${RED_INK}" stroke-width="1.8" stroke-dasharray="6 4"/>` +
+    `<rect x="84" y="28" width="282" height="262" fill="none" stroke="${RED_INK}" stroke-width="1.5" stroke-dasharray="3 5"/>` +
+    note(225, 20, "faces in triangles", "middle") + note(446, 150, "space", "end") + note(446, 166, "at the edges", "end") + note(8, 292, "shoulder to shoulder"));
+ },
+ pets(){
+  const yard = `<rect width="${SW}" height="${SH}" fill="url(#pzSky)"/>` + blur(tree(60, 205, 2, TN[2]) + tree(170, 200, 1.4, TN[2]) + `<rect y="195" width="${SW}" height="110" fill="${TN[2]}"/>`, "pzB") +
+    `<path d="M0,272 Q225,262 450,272 L450,300 L0,300 Z" fill="${TN[3]}" filter="url(#pzW)"/><rect y="272" width="${SW}" height="28" fill="url(#pzl)"/>`;
+  return scene(yard + `<ellipse cx="350" cy="272" rx="95" ry="9" fill="${TN[4]}" opacity=".5" filter="url(#pzB2)"/>` + dog(333, 272, 1.02, TN[3]),
+    redRing(300, 102, 13) + redLine(0, 102, 284, 102) + note(8, 94, "focus on the eye, eye on a third") + note(8, 292, "camera low, at the pet's eye level"));
+ },
+ motion(){
+  seed(3);
+  const bg = `<rect width="${SW}" height="${SH}" fill="url(#pzSky)"/>` + blur(tree(30, 200, 2, TN[3]) + tree(130, 195, 1.7, TN[2]) + tree(250, 205, 2.1, TN[3]) + tree(360, 198, 1.8, TN[2]) + `<rect y="180" width="${SW}" height="40" fill="${TN[3]}"/>`, "pzBh") +
+    `<rect y="238" width="${SW}" height="62" fill="${TN[2]}"/><path d="M0,238 H${SW}" stroke="${TN[4]}" stroke-width="2"/><path d="M0,272 H${SW}" stroke="#fff" stroke-width="3" stroke-dasharray="26 18"/>` +
+    Array.from({ length: 9 }, (_, i) => `<line x1="${5 + rnd() * 20}" y1="${120 + i * 13}" x2="${40 + rnd() * 30}" y2="${120 + i * 13}" stroke="${TN[4]}" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>`).join("");
+  const wheel = (cx, cy) => `<circle cx="${cx}" cy="${cy}" r="33" fill="none" stroke="${TN[6]}" stroke-width="5"/><circle cx="${cx}" cy="${cy}" r="27" fill="none" stroke="${TN[4]}" stroke-width="1"/><circle cx="${cx}" cy="${cy}" r="3" fill="${TN[6]}"/>`;
+  const bike = `<g filter="url(#pzW)">${wheel(92, 205)}${wheel(182, 205)}<path d="M92,205 L136,208 L125,160 Z M125,160 L172,158 L136,208 M172,158 L182,205 M168,150 L172,158" fill="none" stroke="${TN[6]}" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M116,158 h18" stroke="${TN[7]}" stroke-width="5" stroke-linecap="round"/><path d="M165,150 q10,-4 14,4" stroke="${TN[7]}" stroke-width="4" fill="none" stroke-linecap="round"/></g>`;
+  const rider = fig([Lm([[125, 150], [146, 176], [141, 222]], 11, TN[6]), Lm([[125, 150], [150, 170], [134, 198]], 12, TN[5]),
+    Sp("M112,152 Q118,120 150,104 L162,113 Q140,128 134,156 Z", TN[4]), Lm([[155, 110], [168, 128], [176, 150]], 7.5, TN[4]),
+    E(168, 95, 10.5, 11, TN[1], 1), Sp("M156,93 Q160,78 176,82 Q186,86 182,95 Z", TN[6])], TN[4]);
+  return scene(bg + bike + rider, arrowR(215, 140, 425, 140) + note(222, 130, "room to move") + note(8, 292, "subject on the left third, background blurred by panning"));
+ },
+ street(){
+  const vp = [290, 138];
+  const L = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+  const leftTop = [[0, 5], [238, 111]], leftBot = [[0, 258], [238, 152]];
+  const rightTop = [[450, -12], [342, 106]], rightBot = [[450, 276], [342, 150]];
+  let s = `<rect width="${SW}" height="${SH}" fill="url(#pzSky)"/>`;
+  s += blur(`<rect x="232" y="70" width="50" height="85" fill="${TN[2]}"/><rect x="286" y="88" width="60" height="67" fill="${TN[3]}"/>`, "pzB2");
+  s += band([[0, 258], [238, 152], [342, 150], [450, 276], [450, 300], [0, 300]], TN[2]);
+  s += `<path d="M300,300 L342,210 L450,236 L450,300 Z" fill="#fff" opacity=".75" filter="url(#pzW)"/>`;
+  s += band([leftTop[0], leftTop[1], leftBot[1], leftBot[0]], TN[3], 'filter="url(#pzW)"') + band([leftTop[0], leftTop[1], leftBot[1], leftBot[0]], "url(#pzl)");
+  s += band([rightTop[0], rightTop[1], rightBot[1], rightBot[0]], TN[5], 'filter="url(#pzW)"') + band([rightTop[0], rightTop[1], rightBot[1], rightBot[0]], "url(#pzx)");
+  const wins = (T, B, n, rows, c) => { let w = ""; for (let i = 0; i < n; i++) for (let r = 0; r < rows; r++){ const t0 = i / n + .02, t1 = t0 + .6 / n, v0 = .1 + r * .8 / rows, v1 = v0 + .45 / rows;
+    const a = L(L(T[0], T[1], t0), L(B[0], B[1], t0), v0), b = L(L(T[0], T[1], t1), L(B[0], B[1], t1), v0), c2 = L(L(T[0], T[1], t1), L(B[0], B[1], t1), v1), d = L(L(T[0], T[1], t0), L(B[0], B[1], t0), v1);
+    w += `<path d="M${pts([a, b, c2, d])} Z" fill="${c}"/>`; } return `<g filter="url(#pzW)">${w}</g>`; };
+  s += wins(leftTop, leftBot, 7, 4, TN[5]) + wins(rightTop, rightBot, 5, 4, TN[6]);
+  s += `<path d="M0,280 L262,152 M450,290 L330,152" stroke="${TN[4]}" stroke-width="1.5" opacity=".8"/>`;
+  s += `<ellipse cx="320" cy="226" rx="18" ry="4" fill="${TN[4]}" opacity=".6"/>` + human(318, 226, 86, { pose: "walk", tone: TN[5], hair: "short" });
+  s += human(118, 214, 44, { pose: "walk", tone: TN[4], hair: "short", op: .8 }) + human(262, 170, 22, { tone: TN[4], op: .6 });
+  return scene(s, arrowR(40, 262, 200, 192) + arrowR(420, 268, 346, 230) + note(8, 292, "lines lead to the subject") + note(446, 196, "person in a patch of light", "end"));
+ },
+ land(){
+  let s = `<rect width="${SW}" height="${SH}" fill="url(#pzSky)"/>` + blur(`<ellipse cx="120" cy="50" rx="70" ry="16" fill="#fff"/><ellipse cx="170" cy="40" rx="50" ry="20" fill="#fff"/><ellipse cx="350" cy="70" rx="80" ry="14" fill="#fff"/>`, "pzB");
+  s += `<g filter="url(#pzW)">` + band(ridge(0, 450, 150, 90, 9, 2, 200), TN[2]) + band(ridge(-20, 470, 185, 50, 12, 5, 200), TN[3]) + band(ridge(-20, 470, 200, 22, 18, 9, 202), TN[4]) + `</g>`;
+  s += `<path d="M130,93 L150,68 L168,90 L160,88 L150,98 L142,90 Z" fill="#fff" opacity=".85"/>`;
+  s += `<rect y="200" width="${SW}" height="100" fill="${TN[1]}"/>` + `<g opacity=".45" transform="translate(0,400) scale(1,-1)">` + band(ridge(-20, 470, 200, 22, 18, 9, 202), TN[3]) + `</g>`;
+  seed(8); s += Array.from({ length: 14 }, (_, i) => `<line x1="${rnd() * 400}" y1="${206 + i * 6}" x2="${rnd() * 400 + 40}" y2="${206 + i * 6}" stroke="${TN[3]}" stroke-width="1"/>`).join("");
+  s += fig([Sp("M0,300 L0,238 Q30,224 70,236 Q110,226 150,250 Q185,262 205,300 Z", TN[5]), Sp("M40,300 Q60,262 105,268 Q130,275 140,300 Z", TN[6]), Sp("M150,300 Q170,284 200,288 L208,300 Z", TN[5])], TN[5]);
+  s += pine(402, 262, 140) + pine(438, 270, 100);
+  return scene(s, redLine(0, 200, 450, 200) + note(446, 216, "horizon on the lower third", "end") + note(8, 226, "foreground") + note(8, 20, "sky is 2/3 of the frame"), { spark: .45 });
+ },
+ water(){
+  let s = `<rect width="${SW}" height="${SH}" fill="url(#pzSky)"/>` + blur(tree(30, 40, 1.3, TN[3]) + tree(95, 30, 1, TN[3]) + tree(380, 35, 1.2, TN[3]) + tree(440, 30, 1.5, TN[3]), "pzB2");
+  const cliffL = "M0,30 L40,22 L78,28 L112,20 L150,26 L156,60 L148,98 L158,134 L150,170 L156,196 L0,212 Z";
+  const cliffR = "M296,22 L330,16 L372,26 L410,18 L450,24 L450,214 L300,196 L306,162 L296,128 L304,92 L294,58 Z";
+  s += fig([Sp(cliffL, TN[5]), Sp(cliffR, TN[5])], TN[5], { hatch: "url(#pzx)", halo: false });
+  seed(31); s += `<g filter="url(#pzW)" stroke="${TN[7]}" fill="none" stroke-linecap="round">` + Array.from({ length: 22 }, () => { const L = rnd() < .5, x = L ? rnd() * 130 : 316 + rnd() * 130, y = 40 + rnd() * 160; return `<path d="M${f1(x)},${f1(y)} q${f1(12 + rnd() * 14)},${f1(-3 + rnd() * 6)} ${f1(24 + rnd() * 20)},${f1(-2 + rnd() * 4)}" stroke-width="${f1(1 + rnd() * 1.5)}" opacity=".7"/>`; }).join("") + `</g>`;
+  s += `<path d="M150,26 L296,22 L294,58 L304,92 L296,128 L306,162 L300,196 L156,196 L150,170 L158,134 L148,98 L156,60 Z" fill="#fff"/>`;
+  seed(4); s += `<g filter="url(#pzW)">` + Array.from({ length: 17 }, (_, i) => { const x = 158 + i * 8.3 + rnd() * 3; return `<path d="M${f1(x)},26 Q${f1(x + 2)},110 ${f1(x - 2 + rnd() * 4)},192" stroke="${TN[2]}" stroke-width="${f1(.7 + rnd())}" fill="none"/>`; }).join("") + `</g>`;
+  s += `<path d="M156,26 L292,24 L293,40 L157,42 Z" fill="${TN[3]}" opacity=".5" filter="url(#pzW)"/>`;
+  s += `<rect y="192" width="${SW}" height="70" fill="${TN[1]}"/>` + blur(`<ellipse cx="225" cy="196" rx="160" ry="24" fill="#fff"/>`, "pzB");
+  s += `<path d="M70,300 Q150,250 225,238 Q310,248 390,300 Z" fill="#fff" opacity=".95"/>`;
+  seed(6); s += `<g filter="url(#pzW)">` + Array.from({ length: 11 }, (_, i) => `<path d="M${110 + i * 23},300 Q${150 + i * 15},262 ${190 + i * 7},242" stroke="${TN[2]}" stroke-width="1.1" fill="none"/>`).join("") + `</g>`;
+  s += fig([Sp("M0,300 L0,232 L30,226 L62,236 L92,256 L112,280 L118,300 Z", TN[6]), Sp("M175,262 L196,250 L228,252 L240,266 L222,276 L184,274 Z", TN[5]),
+    Sp("M244,288 L258,274 L286,276 L298,292 L286,300 L248,300 Z", TN[5]), Sp("M340,300 L346,270 L372,252 L410,248 L450,258 L450,300 Z", TN[6])], TN[5]);
+  return scene(s, note(446, 232, "water as a soft trail", "end") + arrowR(96, 222, 180, 254) + note(8, 216, "rocks sharp"), { spark: .25 });
+ },
+ things(){
+  let s = `<rect width="${SW}" height="200" fill="${TN[2]}"/><rect y="200" width="${SW}" height="100" fill="${TN[1]}"/>`;
+  s += `<rect x="0" y="0" width="70" height="200" fill="#fff"/><path d="M34,0 V200 M0,95 H70" stroke="${TN[4]}" stroke-width="5"/><rect x="0" y="0" width="70" height="200" fill="none" stroke="${TN[5]}" stroke-width="7"/>`;
+  s += `<path d="M70,0 L260,0 L440,200 L70,200 Z" fill="#fff" opacity=".35"/><path d="M70,200 L300,200 L450,290 L70,300 Z" fill="#fff" opacity=".45"/>`;
+  s += fig([Sp("M390,50 L436,58 L436,222 L390,210 Z", "#fff")], "#fff", { hatch: "none" });
+  s += `<path d="M198,218 Q300,236 370,222 Q300,210 198,218 Z" fill="${TN[3]}" opacity=".7" filter="url(#pzB2)"/>`;
+  s += fig([E(214, 218, 60, 11, TN[1]), Sp("M172,150 L256,150 L250,205 Q246,216 214,216 Q182,216 178,205 Z", "url(#pzCup)"), Sp("M254,160 Q282,160 280,180 Q278,198 250,196 L251,188 Q270,188 270,178 Q270,168 253,168 Z", "#fff"), E(214, 150, 42, 7, TN[5])], "#fff", { hatch: "none" });
+  s += `<g stroke="${TN[4]}" stroke-width="2" fill="none" stroke-linecap="round" filter="url(#pzW)"><path d="M200,138 q-10,-15 2,-28 q10,-12 0,-26"/><path d="M222,136 q10,-15 -2,-28 q-10,-12 2,-26"/></g>`;
+  s += fig([E(320, 226, 44, 8, TN[1]), Sp("M296,224 L350,224 L350,196 L296,212 Z", TN[2]), Sp("M296,212 L350,196 L350,190 L296,207 Z", TN[0]), Sp("M296,218 L350,210 L350,206 L296,214 Z", TN[4]), E(344, 186, 6, 6, TN[5])], TN[3]);
+  return scene(s, arrowR(80, 60, 168, 160, [150, 80]) + note(80, 40, "window light from the side") + note(446, 244, "white sheet", "end") + note(446, 260, "fills the shadows", "end") + note(8, 292, "space around for cropping"), { spark: .2 });
+ },
+ docs(){
+  seed(12);
+  let s = `<rect width="${SW}" height="${SH}" fill="${TN[3]}"/>` + `<g filter="url(#pzW)">` + Array.from({ length: 30 }, (_, i) => `<path d="M0,${i * 10 + rnd() * 4} Q225,${i * 10 + rnd() * 8 - 4} 450,${i * 10 + rnd() * 4}" stroke="${TN[4]}" stroke-width="${f1(.6 + rnd())}" fill="none" opacity=".7"/>`).join("") + `</g>`;
+  s += `<rect x="112" y="30" width="232" height="250" fill="${TN[5]}" opacity=".45" filter="url(#pzB2)" transform="translate(6,6)"/>`;
+  s += fig([Sp("M110,28 L340,28 L340,272 L110,272 Z", "#fff")], "#fff", { hatch: "none" });
+  s += `<g filter="url(#pzW)"><rect x="132" y="48" width="110" height="10" fill="${TN[5]}"/>` + Array.from({ length: 12 }, (_, i) => `<rect x="132" y="${76 + i * 13}" width="${f1(150 + rnd() * 36 - (i % 4 === 3 ? 60 : 0))}" height="4" fill="${TN[3]}"/>`).join("") + `<path d="M250,248 q14,-18 26,-2 q10,-14 30,-6" stroke="${TN[6]}" stroke-width="2" fill="none"/></g>`;
+  s += fig([Sp("M372,40 L388,34 L420,230 L406,238 Z", TN[5]), Sp("M406,238 L420,230 L416,250 Z", TN[2])], TN[5]);
+  const br = (x, y, dx, dy) => `<path d="M${x + dx * 26},${y} H${x} V${y + dy * 26}" stroke="${RED_INK}" stroke-width="3" fill="none"/>`;
+  return scene(s, br(100, 18, 1, 1) + br(350, 18, -1, 1) + br(100, 282, 1, -1) + br(350, 282, -1, -1) + note(446, 150, "page edges", "end") + note(446, 166, "parallel", "end") + note(446, 182, "to the frame", "end") + note(8, 150, "camera") + note(8, 166, "straight") + note(8, 182, "from above"), { grain: .28, spark: .2 });
+ },
+ bw(){
+  let s = `<rect width="${SW}" height="${SH}" fill="${TN[6]}"/>`;
+  s += `<g filter="url(#pzB2)" fill="${TN[1]}" opacity=".9"><path d="M30,30 L130,48 L130,146 L30,136 Z"/><path d="M140,50 L240,68 L240,162 L140,148 Z"/><path d="M30,148 L130,158 L130,256 L30,250 Z"/><path d="M140,160 L240,174 L240,272 L140,262 Z"/></g>`;
+  s += `<rect width="${SW}" height="${SH}" fill="url(#pzx)"/>`;
+  const k = 2.05, ox = 318, oy = 34, T = d => d.replace(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g, (_, a, b) => f1(ox + a * k) + "," + f1(oy + b * k));
+  const prof = T("M0,0 C-22,0 -36,16 -36,38 L-36,46 Q-32,50 -34,54 L-47,70 Q-46,75 -38,76 L-37,81 L-41,84 L-37,87 L-40,91 Q-36,95 -34,97 Q-38,104 -34,108 Q-28,114 -16,116 L-17,140 Q-40,148 -64,170 L90,170 Q70,145 26,128 L24,104 Q46,92 48,54 Q48,14 20,2 Q10,-1 0,0 Z");
+  const lit = T("M-100,-10 L-10,-10 Q-6,50 -6,100 Q-10,130 -36,170 L-100,170 Z");
+  const hair = T("M-36,28 Q-34,-6 4,-6 Q42,-4 52,40 Q56,82 24,106 Q28,74 14,56 Q-4,24 -36,28 Z");
+  s += `<clipPath id="pzPr"><path d="${prof}"/></clipPath><g filter="url(#pzW)"><path d="${prof}" fill="${TN[7]}"/>
+    <g clip-path="url(#pzPr)"><path d="${lit}" fill="${TN[1]}"/><path d="${lit}" fill="url(#pzl)"/><path d="${hair}" fill="${TN[5]}" stroke="${TN[2]}" stroke-width="2.5"/><path d="${hair}" fill="url(#pzh)"/></g>
+    <ellipse cx="${f1(ox + 10 * k)}" cy="${f1(oy + 60 * k)}" rx="${f1(6 * k)}" ry="${f1(10 * k)}" fill="${TN[5]}"/></g>`;
+  return scene(s, arrowR(22, 22, 222, 118, [110, 30]) + note(26, 16, "hard side light") + note(446, 292, "deep shadow is part of the picture", "end"), { spark: .2, grain: .15 });
+ },
+ party(){
+  let s = `<rect width="${SW}" height="${SH}" fill="${TN[5]}"/><rect width="${SW}" height="${SH}" fill="url(#pzx)"/>`;
+  seed(17); s += blur(Array.from({ length: 16 }, (_, i) => `<circle cx="${f1(10 + i * 28 + rnd() * 8)}" cy="${f1(28 + Math.sin(i * .9) * 10 + rnd() * 6)}" r="${f1(6 + rnd() * 5)}" fill="#fff" opacity="${f1(.35 + rnd() * .4)}"/>`).join(""), "pzB2");
+  s += `<path d="M300,0 V38" stroke="${TN[7]}" stroke-width="2"/><path d="M282,52 Q300,30 318,52 Z" fill="${TN[6]}"/><path d="M282,52 L220,300 L400,300 L318,52 Z" fill="#fff" opacity=".14"/>`;
+  s += `<ellipse cx="160" cy="175" rx="150" ry="120" fill="url(#pzGlow)" opacity=".75"/><ellipse cx="300" cy="120" rx="120" ry="110" fill="url(#pzGlow)" opacity=".3"/>`;
+  s += human(40, 380, 290, { fem: true, hair: "long", tone: TN[4], skin: TN[2] });
+  s += human(338, 370, 270, { tone: TN[3], arms: "front", hair: "short", skin: TN[1] });
+  s += fig([Sp("M324,106 L338,62 L352,106 Z", TN[1]), E(338, 62, 5, 5, TN[0])], TN[1]);
+  s += human(430, 380, 280, { fem: true, hair: "bun", tone: TN[4], skin: TN[2] });
+  s += human(165, 300, 200, { kind: "child", hair: "short", tone: TN[2], arms: "front", skin: TN[0] });
+  s += fig([Sp("M0,214 L450,206 L450,300 L0,300 Z", TN[2])], TN[2], { hatch: "url(#pzl)" });
+  s += fig([E(160, 226, 70, 11, TN[0]), Sp("M112,222 L112,190 L208,190 L208,222 Z", TN[1]), Sp("M112,202 L208,202 L208,207 L112,207 Z", TN[3]), E(160, 190, 48, 8, TN[0])], TN[1]);
+  s += `<ellipse cx="160" cy="176" rx="46" ry="30" fill="url(#pzGlow)"/>`;
+  s += [132, 146, 160, 174, 188].map((x, i) => `<rect x="${x - 2}" y="${170 + (i % 2) * 4}" width="4" height="${18 - (i % 2) * 4}" fill="${TN[3]}"/><ellipse cx="${x}" cy="${164 + (i % 2) * 4}" rx="2.6" ry="5" fill="#fff"/>`).join("");
+  s += fig([Sp("M300,232 L318,232 L322,212 L296,212 Z", TN[1]), Sp("M307,232 L311,232 L311,250 L307,250 Z", TN[1]), E(309, 252, 12, 3, TN[1])], TN[1], { hatch: "none" });
+  return scene(s, redRing(160, 170, 30) + note(8, 150, "candles: −2/3,") + note(8, 166, "no flash") + redLine(0, 214, 450, 214) + note(446, 290, "camera at table level", "end") + note(446, 106, "faces closer to the light", "end"), { spark: .2, grain: .1 });
+ },
+ stars(){
+  seed(21);
+  let s = `<rect width="${SW}" height="${SH}" fill="url(#pzNight)"/>`;
+  s += `<g transform="rotate(-28 225 150)" filter="url(#pzB)"><ellipse cx="225" cy="130" rx="330" ry="34" fill="${TN[4]}" opacity=".8"/><ellipse cx="240" cy="132" rx="200" ry="14" fill="${TN[3]}" opacity=".7"/><ellipse cx="200" cy="140" rx="120" ry="6" fill="${TN[6]}" opacity=".8"/></g>`;
+  s += Array.from({ length: 170 }, () => { const x = rnd() * 450, y = rnd() * 235, r = rnd() < .9 ? .5 + rnd() * .7 : 1.3 + rnd() * .9; return `<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(r)}" fill="#fff" opacity="${f1(.5 + rnd() * .5)}"/>`; }).join("");
+  s += `<g filter="url(#pzW)">` + band(ridge(-20, 470, 238, 30, 10, 3), TN[6]) + band(ridge(-20, 470, 262, 18, 14, 7), TN[7]) + `</g>`;
+  s += pine(352, 262, 120, TN[7]) + pine(384, 268, 80, TN[7]);
+  s += fig([Sp("M120,262 L150,226 L180,262 Z", TN[3]), Sp("M140,262 L150,244 L160,262 Z", "#fff")], TN[3], { halo: false, hatch: "none" });
+  return scene(s, redLine(0, 238, 450, 238) + note(8, 230, "horizon low — sky is 3/4 of the frame") + note(446, 290, "silhouette in the foreground", "end"), { grain: .12, spark: .15 });
+ },
+};
+
+const SHOT = {
+ portrait:{ 
+   comp:"Put the eyes on the top grid line. Place the head on a vertical thirds line, looking toward the empty space. Don't crop at joints: neck, elbows, knees.",
+   err:"Face dead center, empty space above the head, a pole “growing” out of the head in the background.",
+   check:"Zoom in with the ▶ button and the rear dial: the nearer eye should be sharp." },
+ kids:{ 
+   comp:"Crouch down: camera at the child's eye level. Keep what they're playing with in the frame — the story matters more than the pose.",
+   err:"Shooting from above: the child looks tiny and you see the top of their head.",
+   check:"Scroll through the burst and keep the frame where the eyes are sharp and open." },
+ family:{ 
+   comp:"Put the second row between the heads of the first, so faces form triangles. People stand close, turned slightly toward the center. Leave space at the edges: don't crop the arms and shoulders of people at the ends.",
+   err:"Everyone in one line, gaps between people, the person at the end cut off at the shoulder.",
+   check:"Zoom in on every face in the burst: are everyone's eyes open, and are the faces in the second row sharp?" },
+ party:{ 
+   comp:"Shoot at table level, not standing over it. Put the guest of honor and the cake on thirds intersections, other faces around the edges. Catch reactions: laughter, hugs, candles being blown out.",
+   err:"Direct flash: white faces, black background, red eyes. And everything shot from standing height.",
+   check:"Zoom in on faces in the burst: sharp eyes and no blur. If blurry, raise the ISO preset to AUTO2." },
+ pets:{ 
+   comp:"Get down to the pet's eye level, with its eye near a grid intersection. Hold a treat or toy above the lens so it looks into the camera.",
+   err:"Focus landed on the nose or fur, and the eye is soft. Make the focus point smaller with the rear dial.",
+   check:"Zoom in on the eye: you should see a catchlight in it." },
+ motion:{ 
+   comp:"Leave empty space in the direction of movement. Shoot when the subject is moving toward you at an angle, not straight across.",
+   err:"The subject's nose touches the edge of the frame — it looks like it's “crashing” into it.",
+   check:"Zoom in on the best frame of the burst. Blurry: use a faster shutter speed. Missed focus: use AF-C and a wider zone." },
+ street:{ 
+   comp:"Find the background and light first, then wait for a person. Street lines should lead the eye to them, with the person on a thirds intersection.",
+   err:"Shooting people from behind and far away — a photo with no subject.",
+   check:"Check the horizon with the electronic level, and the shutter speed: no slower than 1/250 for people walking." },
+ land:{ 
+   comp:"Put the horizon on a thirds line, not in the middle. Interesting sky: give it two thirds; boring sky: one third. Add a foreground: a rock, a road, a branch.",
+   err:"A tilted horizon and an empty foreground.",
+   check:"The histogram shouldn't hit the right edge: an overexposed sky can't be saved." },
+ water:{ 
+   comp:"Put rocks in the foreground that the water flows toward. Shoot closer to the water and lower down.",
+   err:"Handheld with a slow shutter speed — everything is blurred, not just the water.",
+   check:"Zoom in on the rocks: they should be sharp. Water pure white with no detail: use a faster shutter speed or an ND filter." },
+ things:{ 
+   comp:"Window light from the side, a white sheet as a reflector on the other side. Object slightly above center, with space around it for cropping for a listing.",
+   err:"Overhead ceiling light and direct flash: harsh shadows and glare.",
+   check:"Compare the color on the screen with the real object. If it's off, set the white balance from a white sheet." },
+ docs:{ 
+   comp:"Camera straight above the page, page edges parallel to the frame edges. Window light from the side, without your own shadow.",
+   err:"Shooting at an angle: the page turns into a trapezoid and the text at the bottom gets small.",
+   check:"Zoom in on the smallest line — it should be readable." },
+ bw:{ 
+   comp:"In B&W, light and shadow are everything. Look for side light and backlight, silhouettes, texture, light against dark.",
+   err:"Turning a dull, flat-lit shot into B&W — you get gray mush.",
+   check:"The histogram should have both blacks and whites." },
+ stars:{ 
+   comp:"Sky fills three quarters of the frame, horizon low. A silhouette of a tree or house brings the shot to life.",
+   err:"Autofocus in the dark and shooting from the city — stars aren't sharp and get lost in light pollution.",
+   check:"Zoom in on a star: it should be a dot, not a streak. Streak: use a faster shutter speed." },
+};
+function lightTip(W, what){
+  if (what==="stars") return "You need a dark, moonless night, 30+ km from the city.";
+  if ((what==="docs"||what==="things") && W.id==="studio") return "Two flashes with softboxes, left and right at 45°, white paper background. Get rid of glare on glossy surfaces by turning the object.";
+  if (what==="docs"||what==="things") return W.indoor ? "Window to the side, ceiling light off." : "The soft shade of a building beats direct sun.";
+  return ({
+    sun:"Direct sun is harsh: turn the subject so the light comes from the side, or move into the shade. Sun behind the person: use plus exposure compensation.",
+    shade:"Shade and clouds give soft light — the best time for people. Make sure the background isn't brighter than the subject.",
+    window:"The window is your main light: subject at 45° to it, with a white sheet as a reflector on the dark side.",
+    lamps:"Find the brightest lamp and put the subject close to it. Don't mix warm lamps with daylight from a window.",
+    dusk:"Blue hour lasts 20–40 minutes after sunset: shoot against the sky while it's still blue.",
+    night:"Light comes from street lamps and shop windows: put the subject in their pool of light, not between them.",
+    golden:"Golden hour is about an hour before sunset: low warm light and long soft shadows. The light changes every 10 minutes, so keep shooting.",
+    studio:"Main flash at 45° to the person and slightly above eye level; a weaker second flash or a white reflector on the other side. Light the background separately.",
+    indark:"Candles and fairy lights are beautiful but very weak light. Faces close to the candles, compensation −1/3…−2/3 to keep the dim mood. ISO will go up — that's normal.",
+  })[W.id];
+}
+function shotBlock(what, W){
+  const k = SHOT[what]; if(!k) return "";
+  return `<div class="card shot"><h3><i style="background:${RED_INK}"></i>How to take the shot</h3>
+    <div class="shotgrid"><div>${SCN[what]()}<p class="skcap">Example frame, pencil sketch. Dotted lines are the rule-of-thirds grid, as on the camera screen.</p></div>
+    <dl class="shotlist">
+      <div><dt>Light</dt><dd>${esc(lightTip(W, what))}</dd></div>
+      <div><dt>Composition</dt><dd>${esc(k.comp)}</dd></div>
+      <div><dt>Common mistake</dt><dd>${esc(k.err)}</dd></div>
+      <div><dt>Check after the shot</dt><dd>${esc(k.check)}</dd></div>
+    </dl></div></div>`;
+}
+
+/* ---------- drawings with highlights ---------- */
+const PH = {"top": {"w": 1600, "h": 980, "spots": {"drive": ["c", 220, 690, 150], "flash": ["c", 50, 770, 45], "shutter_dial": ["c", 1050, 700, 128], "auto": ["c", 1215, 790, 40], "expcomp": ["c", 1410, 750, 122], "release": ["c", 1250, 600, 55], "onoff": ["c", 1250, 600, 80], "fn": ["c", 1390, 590, 30], "zoom": ["r", 360, 40, 590, 170], "hotshoe": ["r", 540, 640, 250, 300]}}, "rear": {"w": 1380, "h": 1000, "spots": {"delete": ["c", 166, 244, 32], "play": ["c", 286, 244, 32], "view": ["c", 800, 220, 36], "ael": ["c", 940, 262, 32], "rear_dial": ["r", 1010, 236, 135, 60], "afl": ["c", 1230, 270, 32], "q": ["c", 1330, 420, 34], "stick": ["c", 1124, 590, 46], "menu": ["c", 1128, 726, 42], "disp": ["c", 1128, 860, 42], "lcd": ["r", 90, 340, 960, 640], "evf": ["c", 620, 190, 120]}}, "lens": {"w": 1220, "h": 760, "spots": {"aperture_ring": ["r", 70, 290, 1040, 170], "a_switch": ["r", 520, 480, 260, 200], "ois": ["r", 240, 480, 220, 200], "zoom": ["r", 70, 0, 1040, 262]}}, "grip": {"w": 921, "h": 760, "spots": {"front_dial": ["r", 290, 240, 250, 95], "af_lamp": ["c", 644, 282, 45]}}, "focus": {"w": 781, "h": 860, "spots": {"focus_sel": ["c", 276, 560, 118]}}};
+let UID = 0;
+function spotShape(sp, pad, attrs){
+  if (sp[0]==="c") return `<circle cx="${sp[1]}" cy="${sp[2]}" r="${sp[3]+pad}" ${attrs}/>`;
+  return `<rect x="${sp[1]-pad}" y="${sp[2]-pad}" width="${sp[3]+2*pad}" height="${sp[4]+2*pad}" rx="${14+pad}" ${attrs}/>`;
+}
+function spotCenter(sp){ return sp[0]==="c" ? [sp[1],sp[2],sp[3]] : [sp[1]+sp[3]/2, sp[2]+sp[4]/2, Math.max(sp[3],sp[4])/2]; }
+/* photo(name, viewBox[x,y,w,h]|null, [{k,color,label,num,arc}], {dim}) */
+function photo(name, vb, marks, opt={}){
+  const base = name; name = src(name);
+  const m = PH[name]; const id = "m"+(++UID);
+  vb = (vb && typeof vb[0]==="string") ? autoVB(m, vb, opt.pad, opt.aspect) : (vb || [0,0,m.w,m.h]);
+  const u = vb[2]/100, dim = opt.dim!==false;
+  let holes="", rings="", labels=""; const placed=[];
+  marks.forEach(mk=>{
+    const sp = m.spots[mk.k]; if(!sp) return;
+    const pad = 1.6*u;
+    holes += spotShape(sp, pad, 'fill="#000"');
+    // soft halo + fine line, like a marker pass under a pencil line
+    if (dim) rings += spotShape(sp, pad, `fill="none" stroke="${mk.color}" stroke-opacity=".16" stroke-width="${2.4*u}"`);
+    rings += spotShape(sp, pad, `fill="none" stroke="${mk.color}" stroke-width="${(dim?0.42:0.3)*u}"${dim?"":` stroke-dasharray="${1.4*u} ${0.9*u}"`}`);
+    const [cx,cy,r] = spotCenter(sp);
+    if (mk.arc && sp[0]==="c"){
+      const R=r+pad+2.6*u, a0=-58*Math.PI/180, a1=-8*Math.PI/180;
+      const p=(a)=>[cx+R*Math.sin(a), cy-R*Math.cos(a)];
+      const [x0,y0]=p(a0),[x1,y1]=p(a1);
+      rings += `<path d="M${x0},${y0} A${R},${R} 0 0 1 ${x1},${y1}" fill="none" stroke="${mk.color}" stroke-width="${0.42*u}" stroke-linecap="round" marker-end="url(#a${id})"/>`;
+    }
+    if (mk.num!==undefined){
+      const off=(sp[0]==="c"?r+pad:0)*0.72; const bx=sp[0]==="c"?cx+off:sp[1]+sp[3]+pad*0.3, by=sp[0]==="c"?cy-off:sp[2]-pad*0.3;
+      const br=2.3*u;
+      labels += `<circle cx="${bx}" cy="${by}" r="${br}" fill="${mk.color}" stroke="${PAPER}" stroke-width="${0.35*u}"/>
+        <text x="${bx}" y="${by}" text-anchor="middle" dominant-baseline="central" font-family="Onest,sans-serif" font-weight="700" font-size="${2.6*u}" fill="#fff">${mk.num}</text>`;
+    }
+    if (mk.label){
+      const fs=(mk.fs?mk.fs*0.72:3.7)*u, tw=mk.label.length*fs*0.6+2.6*u, th=fs*1.55;
+      let lx, ly, lead="";
+      if (sp[0]==="r") {           // tab sitting on the frame's top edge
+        lx = mk.at==="top" ? sp[1]+2*u : cx - tw/2; ly = sp[2]-pad - th/2;
+      } else {                     // caption under the ring with a short hairline
+        const gap=2.2*u; ly = cy + r + pad + gap;
+        let up = ly+th > vb[1]+vb[3]-0.6*u; if (up) ly = cy - r - pad - gap - th;
+        lx = cx - tw/2;
+        const y1 = up ? cy - r - pad : cy + r + pad, y2 = up ? ly+th : ly;
+        lead = `<line x1="${cx}" y1="${y1}" x2="${cx}" y2="${y2}" stroke="${mk.color}" stroke-width="${0.3*u}"/>`;
+      }
+      lx = Math.min(Math.max(lx, vb[0]+0.6*u), vb[0]+vb[2]-tw-0.6*u);
+      ly = Math.max(ly, vb[1]+0.6*u);
+      // keep tags from colliding: slide right, then drop a row
+      const hit=()=>placed.find(b=>lx<b[0]+b[2]+u && lx+tw+u>b[0] && ly<b[1]+b[3]+0.5*u && ly+th+0.5*u>b[1]);
+      for (let n=0, b; (b=hit()) && n<6; n++){
+        const nx=b[0]+b[2]+1.2*u;
+        if (nx+tw <= vb[0]+vb[2]-0.6*u) lx=nx; else { ly=b[1]+b[3]+0.8*u; }
+      }
+      if (lead && sp[0]==="c") lead = `<polyline points="${cx},${ly<cy?cy-r-pad:cy+r+pad} ${cx},${ly<cy?ly+th+(ly+th<cy-r-pad?0:0):ly} ${Math.min(Math.max(cx,lx+th*0.4),lx+tw-th*0.4)},${ly<cy?ly+th:ly}" fill="none" stroke="${mk.color}" stroke-width="${0.3*u}"/>`;
+      placed.push([lx,ly,tw,th]);
+      labels += lead + `<rect x="${lx}" y="${ly}" width="${tw}" height="${th}" rx="${th*0.3}" fill="${PAPER}" stroke="${mk.color}" stroke-width="${0.34*u}"/>
+        <text x="${lx+tw/2}" y="${ly+th/2}" text-anchor="middle" dominant-baseline="central" font-family="Onest,sans-serif" font-weight="700" font-size="${fs}" fill="${mk.ink&&mk.ink!=="#1D1F22"?mk.ink:(mk.color===YEL?"#8A6500":mk.color)}">${esc(mk.label)}</text>`;
+    }
+  });
+  return `<svg class="ph" viewBox="${vb.join(" ")}" role="img" aria-label="${esc(opt.alt||"")}">
+    <defs>${defsArt(id)}<mask id="${id}"><rect x="${vb[0]}" y="${vb[1]}" width="${vb[2]}" height="${vb[3]}" fill="#fff"/>${holes}</mask>
+    <marker id="a${id}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="2.6" markerHeight="2.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E0301E"/></marker></defs>
+    <rect x="${vb[0]}" y="${vb[1]}" width="${vb[2]}" height="${vb[3]}" fill="${PAPER}"/>
+    ${m.img?`<image href="${m.img}" x="0" y="0" width="${m.w}" height="${m.h}" preserveAspectRatio="none"/>`:`<g>${DRAW[name](id, opt.state||{})}</g>`}
+    ${dim?`<rect x="${vb[0]}" y="${vb[1]}" width="${vb[2]}" height="${vb[3]}" fill="${PAPER}" opacity=".66" mask="url(#${id})"/>`:""}
+    ${rings}${labels}</svg>`;
+}
+PH.front = {w:1520, h:1000, spots:{
+  front_dial:["r",315,254,141,56], af_lamp:["c",540,285,30], focus_sel:["c",1263,745,82],
+  release:["c",585,870,46], mount:["c",858,615,302], shutter:["r",300,100,120,76], shutter_dial:["r",426,100,204,76], drive:["r",1134,103,216,72]}};
+PH.topS = {"w": 1060, "h": 360, "img": "img/top_st.jpg", "spots": {"drive": ["c", 191, 171, 84], "flash": ["c", 97, 222, 24], "shutter_dial": ["c", 717, 174, 86], "auto": ["c", 780, 240, 18], "release": ["c", 842, 118, 31], "onoff": ["c", 842, 118, 44], "fn": ["c", 935, 97, 21], "expcomp": ["c", 942, 210, 82], "hotshoe": ["r", 378, 145, 177, 145]}};
+PH.frontS = {"w": 1290, "h": 870, "img": "img/front_st.jpg", "spots": {"front_dial": ["r", 245, 212, 138, 50], "af_lamp": ["c", 455, 235, 28], "mount": ["c", 742, 548, 277], "release": ["c", 505, 765, 42], "focus_sel": ["c", 1111, 704, 70], "shutter": ["r", 250, 78, 120, 60], "shutter_dial": ["r", 348, 68, 196, 64], "drive": ["r", 995, 66, 197, 66]}};
+PH.rearP = {"w": 1370, "h": 900, "img": "img/rear_st.jpg", "spots": {"delete": ["c", 182, 230, 32], "play": ["c", 293, 228, 32], "evf": ["c", 590, 195, 118], "view": ["c", 762, 208, 36], "ael": ["c", 910, 230, 32], "rear_dial": ["r", 980, 205, 145, 45], "afl": ["c", 1188, 230, 32], "q": ["c", 1253, 380, 36], "stick": ["c", 1073, 548, 50], "menu": ["c", 1068, 660, 36], "disp": ["c", 1068, 782, 36], "lcd": ["r", 110, 330, 875, 540]}};
+PH.lensP = Object.assign({}, PH.lens, {img:"img/lens.jpg"});
+function src(name){ return S.style==="photo" ? ({top:"topS",front:"frontS",rear:"rearP",lens:"lensP"}[name]||name) : name; }
+function autoVB(m, keys, pad=0.3, aspect=4/3){
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  keys.forEach(k=>{const sp=m.spots[k]; if(!sp) return;
+    const b = sp[0]==="c" ? [sp[1]-sp[3],sp[2]-sp[3],sp[1]+sp[3],sp[2]+sp[3]] : [sp[1],sp[2],sp[1]+sp[3],sp[2]+sp[4]];
+    x0=Math.min(x0,b[0]); y0=Math.min(y0,b[1]); x1=Math.max(x1,b[2]); y1=Math.max(y1,b[3]);});
+  if (x0>x1) return [0,0,m.w,m.h];
+  let w=x1-x0, h=y1-y0, e=pad*Math.max(w,h); x0-=e; y0-=e; w+=2*e; h+=2*e;
+  if (w/h < aspect){ const nw=h*aspect; x0-=(nw-w)/2; w=nw; } else { const nh=w/aspect; y0-=(nh-h)/2; h=nh; }
+  if (w>m.w){ const k=m.w/w; w=m.w; h*=k; } if (h>m.h){ const k=m.h/h; h=m.h; w*=k; }
+  x0=Math.min(Math.max(x0,0),m.w-w); y0=Math.min(Math.max(y0,0),m.h-h);
+  return [x0,y0,w,h].map(v=>Math.round(v));
+}
+const RED="#E0301E", BLUE="#1F6FD6", YEL="#F2B705", GRN="#178A4A";
+/* ---------- menu paths (Russian camera menu) ---------- */
+const P = {
+  iso: v => ["MENU/OK","SHOOTING SETTING","ISO",v],
+  afmode: v => ["MENU/OK","AF/MF SETTING","AF MODE",v],
+  face: on => on ? ["MENU/OK","AF/MF SETTING","FACE/EYE DETECTION SETTING","FACE ON","EYE AUTO"]
+                 : ["MENU/OK","AF/MF SETTING","FACE/EYE DETECTION SETTING","OFF"],
+  afc: v => ["MENU/OK","AF/MF SETTING","AF-C CUSTOM SETTINGS",v],
+  timer: ["MENU/OK","SHOOTING SETTING","SELF-TIMER","2 SEC"],
+  timer10: ["MENU/OK","SHOOTING SETTING","SELF-TIMER","10 SEC"],
+  ois: ["MENU/OK","SHOOTING SETTING","IS MODE","OFF"],
+  mech: ["MENU/OK","SHOOTING SETTING","SHUTTER TYPE","MECHANICAL SHUTTER"],
+  preview: ["MENU/OK","SET UP","SCREEN SET-UP","PREVIEW EXP./WB IN MANUAL MODE","OFF"],
+  wbSun: ["Q","WHITE BALANCE","☀ (DAYLIGHT)"],
+  bank: b => ["Q","top-left tile (BASE)",b],
+};
+const BANKS = {C1:"C1 PORTRAIT",C2:"C2 MOTION",C3:"C3 STREET",C4:"C4 LANDSCAPE",C5:"C5 NIGHT",C6:"C6 B&W",C7:"C7 OBJECTS"};
+
+/* ---------- rules for X-T30 + XF 18-55 f/2.8-4 ---------- */
+function advise(){
+  const W = WHERE.find(w=>w.id===S.where), L=W.L, tripod=S.tripod==="yes", ind=!!W.indoor;
+  const r = {mode:"A", shutter:{dial:"A", text:"camera picks"}, ap:{v:"5.6", text:"f/5.6"}, zoom:null,
+    iso:"AUTO1", isoFixed:false, focus:"S", af:"SINGLE POINT", drive:"S", face:false, comp:"0", bank:"C3",
+    extra:[], tips:[], warns:[], block:null, timer:false, why:""};
+
+  switch(S.what){
+  case "portrait":
+    r.ap={v:"4", text:"f/4 at 55 mm"}; r.zoom="55 mm"; r.face=true; r.bank="C1";
+    r.why="Zooming to 55 mm with the aperture wide open blurs the background, and the camera keeps focus on the eye.";
+    r.tips.push("The 18–55 blurs the background only moderately: get closer to the person and move them 3–5 m away from the background.");
+    if (L===3) { r.compLater={v:"+2/3…+1", to:"plus", when:"If the sun is behind the person and the face comes out dark"}; r.tips.push("Move the person into the shade: direct sun means squinting and shadows under the eyes."); }
+    if (W.id==="window") r.tips.push("Put the person at 45° to the window and turn off the ceiling light: mixed light gives yellow patches.");
+    if (L<=1) r.tips.push("Low light: pop up the flash with the lever on the top left: FLASH SETTING → FLASH FUNCTION SETTING → TTL, SLOW SYNC, power −1. The background stays visible.");
+    if (L<=1) r.warns.push("With flash, shutter speed can't be faster than 1/180 s, and the flash won't fire with the electronic shutter. SHUTTER TYPE → MECHANICAL SHUTTER.");
+    break;
+  case "kids":
+    r.ap={v:"2.8", text:"smallest number"}; r.face=true; r.iso="AUTO2"; r.focus="C"; r.af="ZONE"; r.drive="CL"; r.bank="C2";
+    r.why="AF-C tracks focus, 1/250 s or faster prevents blur, and a burst catches the moment.";
+    r.tips.push("Keep the zoom near 18–30 mm: the aperture there is f/2.8–3.2, so more light. Shoot at the child's eye level.");
+    if (L<=1) r.warns.push(ind ? "Low light: ISO will hit 6400. Turn on all the lights or move closer to a window." : "Low light: ISO will hit 6400. Shoot near streetlights and shop windows.");
+    break;
+  case "family":
+    r.ap = L<=1 ? {v:"4", text:"f/4 — more light"} : {v:"8", text:"f/5.6–f/8 — all rows sharp"};
+    r.zoom="23–35 mm"; r.iso="AUTO1"; r.face=true; r.af="ZONE"; r.drive="CL"; r.bank="C1";
+    r.why="A smaller aperture keeps both the front and back rows sharp. Shoot a burst of 5–6 frames so everyone has their eyes open in at least one.";
+    r.tips.push("Zoom to 23–35 mm, not 18: at the widest setting, people at the edges of the frame get stretched.");
+    if (tripod) { r.extra.push(P.timer10); r.tips.push("Want to be in the photo yourself? Use a tripod and SELF-TIMER → 10 SEC, and put the focus point on the face of the person in the center. For a series, take 3 timer shots in a row."); }
+    else r.tips.push("Stand 3–4 m away with the camera at the standing people's eye level. Shoot a burst and zoom in right away to check the eyes.");
+    if (ind && L<=1) r.warns.push("Indoors in the evening there's too little light for a group: ISO will climb to 6400. Better to bounce a flash off the ceiling (external flash only), or gather everyone near a window during the day.");
+    else if (L===3) r.tips.push("Everyone squinting in the sun? Turn the group's backs to the sun and set the compensation dial to +2/3…+1.");
+    break;
+  case "party":
+    r.ap={v:"2.8", text:"f/2.8–f/3.2: zoom 18–23 mm"}; r.zoom="18–23 mm"; r.iso="AUTO1"; r.focus="C"; r.af="ZONE"; r.face=true; r.drive="CL"; r.bank="C1";
+    if (L<=1) r.compLater={v:"−2/3", to:"minus", when:"When the cake with candles comes out", back:true};
+    r.extra.push(P.mech);
+    r.why="One setup for the whole evening: AF-C with eye detection catches both people sitting and dancing; a wide aperture and AUTO1 keep the shutter at 1/125 s, and a CL burst saves you from blinks.";
+    r.tips.push("Bank C1 (PRO Neg. Hi, soft tones) renders skin well under warm lamps — you don't need a separate party bank. Want your own? Save a copy of C1 to a free slot and name it \"PARTY\".");
+    r.tips.push("Keep the zoom at 18–23 mm: that's f/2.8–3.2. At 55 mm the aperture is only f/4, so ISO doubles.");
+    r.tips.push("Three quick changes during the evening. Cake candles: compensation dial to −2/3 (two clicks toward minus), no flash — the shot stays dark and warm like the room, not gray. Group photo at the table: f/4, step back 3 m, burst. Dancing: Q → ISO → AUTO2 (1/250 or faster), then back to AUTO1.");
+    r.tips.push("Keep faces close to the lamps, with a dark wall behind — not a window.");
+    if (L<=1) r.warns.push("The built-in flash hits straight on and kills the mood — use it only when it's really dark, and then with SLOW SYNC and power −1.");
+    if (!ind) r.tips.push("Party outdoors: see the light tips above — pick the location, the settings stay the same.");
+    break;
+  case "pets":
+    r.ap={v:"2.8", text:"smallest number"}; r.iso="AUTO2"; r.focus="C"; r.drive="CL"; r.bank="C2";
+    r.why="X-T30 eye detection only works on people — catch the animal's eye yourself with a small focus point.";
+    r.tips.push("Use the joystick to put the point on the nearer eye, and the rear dial to make it smaller.");
+    r.tips.push("For shy animals, go silent: SHUTTER TYPE → ELECTRONIC SHUTTER (but not under flickering lights).");
+    if (L<=1) r.warns.push("No flash: it scares them and gives glowing eyes. Move closer to the light.");
+    break;
+  case "motion": {
+    r.mode="S"; const sp = L===3?"1000":L===2?"500":"250";
+    r.shutter={dial:sp, text:`1/${sp} s`}; r.ap={v:"A", text:"switch to A"};
+    r.iso="AUTO2"; r.focus="C"; r.af="ZONE"; r.drive="CH"; r.bank="C2";
+    r.extra.push(P.afc("SET 3"));
+    r.why="You set a fast shutter speed, the camera picks aperture and ISO. CH gives 8 fps without distortion.";
+    r.tips.push("Half-press the shutter button in advance and follow the subject with the zone.");
+    if (L<=1) r.warns.push("Not enough light for fast motion: 1/250 s will blur a bike. Catch a pause in the action or find more light.");
+    if (L===3) r.tips.push("Still blurry? Set 2000 (1/2000 s).");
+    break; }
+  case "street":
+    r.ap={v:"8", text:"f/5.6–f/8"}; r.zoom="18–23 mm"; r.iso="AUTO2"; r.af="ZONE"; r.bank="C3";
+    r.why="At 18 mm and f/8, almost everything from 1.5 m to the horizon is sharp — you barely need to focus.";
+    if (L<=1) { r.ap={v:"2.8",text:"f/2.8 at 18 mm"}; r.iso="AUTO1"; r.comp="−1/3…−2/3"; r.why="In the evening, open the aperture at 18 mm and keep the dark evening look with minus compensation."; }
+    r.tips.push("Tilt the screen and shoot from waist level — people notice the camera less.");
+    break;
+  case "land":
+    r.face=false; r.ap={v:"8", text:"f/8"}; r.zoom="18 mm"; r.bank="C4";
+    r.why="f/8 is the sharpest aperture: sharp from foreground to horizon.";
+    if (L>=2) { r.iso="AUTO3"; r.comp = L===3 ? "−1/3" : "0"; if (L===3) r.compWhy="so the bright sky doesn't blow out"; r.tips.push("Add a foreground: a rock, a road, a branch. Level the horizon with the electronic level."); }
+    else if (tripod) {
+      r.mode="M"; r.shutter={dial:"T", text: L===0?"T, rear dial 4″–15″":"T, rear dial 1″–4″"};
+      r.iso="160"; r.isoFixed=true; r.timer=true; r.comp="—"; r.bank="C5";
+      r.extra.push(P.ois);
+      r.why="On a tripod: low ISO and a long exposure give a clean, detailed image.";
+      r.warns.push("Watch the histogram: streetlights shouldn't hit the right edge. If overexposed, use a shorter exposure.");
+    } else {
+      r.ap={v:"2.8", text:"f/2.8 at 18 mm"}; r.iso="AUTO3"; r.comp="−2/3";
+      r.why="Without a tripod, open the aperture at 18 mm; the lens stabilizer will handle 1/30 s.";
+      r.warns.push("The X-T30 body has no stabilizer, only the lens OIS works. Brace against a wall and shoot a burst of 3 frames.");
+    }
+    break;
+  case "water":
+    if (tripod && L<=2) {
+      r.mode="S"; r.shutter={dial:"2", text:"1/2 s (up to 2″ via T)"}; r.ap={v:"A",text:"A — stops down to f/11–16"};
+      r.iso="160"; r.isoFixed=true; r.timer=true; r.bank="C4"; r.extra.push(P.ois);
+      r.why="A long exposure turns water into \"silk\" while rocks stay sharp — tripod only.";
+      r.tips.push("Focus on a rock, then set the focus lever to M so focus doesn't shift.");
+      if (L===2) r.tips.push("Too bright even at f/16? You need a 58 mm ND filter (ND8–ND64) — that's the 18–55's filter size.");
+    } else {
+      r.mode="S"; const sp = L===3?"1000":L===2?"500":"250";
+      r.shutter={dial:sp,text:`1/${sp} s`}; r.ap={v:"A",text:"switch to A"}; r.iso="AUTO2"; r.focus="C"; r.af="ZONE"; r.drive="CL"; r.bank="C4";
+      r.why="A fast shutter speed \"freezes\" the spray, and a burst catches the wave's peak.";
+      if (tripod && L===3) r.tips.push("\"Silky\" water in sunlight needs a 58 mm ND filter.");
+    }
+    r.warns.push("The X-T30 and 18–55 aren't weather-sealed: in rain or spray use a cover or a bag, and bring a lens cloth.");
+    break;
+  case "things":
+    r.ap={v:"5.6",text:"f/5.6–f/8"}; r.zoom="55 mm"; r.bank="C7";
+    r.why="55 mm doesn't distort shapes, and f/5.6–8 keeps the whole object sharp. The 18–55 can't focus closer than ~30 cm.";
+    if (tripod) { r.iso="160"; r.isoFixed=true; r.timer=true; r.extra.push(P.ois); } else r.iso="AUTO1";
+    r.tips.push("Window to the side, white sheet opposite as a reflector, and a curved sheet of white paper as the background.");
+    r.tips.push("Colors look off? WHITE BALANCE → CUSTOM, measure off a white sheet.");
+    break;
+  case "docs":
+    r.ap={v:"8",text:"f/5.6–f/8"}; r.zoom="35–55 mm"; r.iso="AUTO1"; r.comp="+2/3…+1"; r.bank="C7";
+    r.why="The camera makes white paper look gray — plus compensation brings the white back.";
+    r.tips.push("Keep the camera exactly parallel to the page, with the electronic level on screen. No flash — it causes glare.");
+    break;
+  case "bw":
+    r.ap={v:"5.6",text:"depends on subject"}; r.iso="AUTO1"; r.bank="C6"; r.face=true;
+    r.why="Bank C6 turns on ACROS: the screen shows B&W right away, so it's easy to judge light and shadow.";
+    r.tips.push("Look for side light and backlight, silhouettes, textures. GRAIN EFFECT WEAK gives a film look.");
+    r.tips.push("Leave MONOCHROMATIC COLOR (WARM/COOL) in bank C6 at 0 for clean neutral B&W. For an \"old photo\" look, +2…+4 (warm); for a cold winter tone, −2…−3.");
+    r.tips.push("Shoot with IMAGE QUALITY → F+RAW: the RAW file keeps the color.");
+    break;
+  case "stars":
+    r.mode="M"; r.shutter={dial:"T", text:"T, rear dial 15″–20″"}; r.ap={v:"2.8", text:"f/2.8 at 18 mm"}; r.zoom="18 mm";
+    r.iso="3200"; r.isoFixed=true; r.focus="M"; r.af="—"; r.timer=true; r.comp="—"; r.bank="C5"; r.extra.push(P.ois);
+    r.why="500 rule: 500 / 27 mm (18 mm equivalent) ≈ 18 s. Any longer and stars turn into streaks.";
+    r.tips.push("Focus manually: zoom in on a bright star on screen and turn the focus ring until it's the smallest dot.");
+    r.tips.push("IMAGE QUALITY → F+RAW. WHITE BALANCE → 3800–4200 K.");
+    r.warns.push("At f/2.8 the Milky Way will be faint — you need a dark night 30+ km from the city. ISO can go up to 6400.");
+    if (!tripod) r.block="Stars won't work without a tripod: you need 15–20 seconds of complete stillness.";
+    break;
+  }
+  if (W.id==="golden") {
+    r.extra.push(P.wbSun);
+    r.tips.push("Golden hour: AUTO white balance \"cancels\" the warm sunset light. Q → WHITE BALANCE → ☀ and the gold stays. Switch back to AUTO after sunset.");
+    if (["portrait","kids","family","party","street"].includes(S.what)) r.tips.push("Put the person with their back or side to the low sun for a glowing rim around the hair. If the face comes out dark, set the compensation dial to +1/3…+2/3.");
+    if (["land","water"].includes(S.what)) r.tips.push("Shooting into the sun? Set the compensation dial to −1/3…−2/3 so the sky doesn't blow out. Sun behind you gives softer, more even colors.");
+  }
+  if (W.id==="studio" && S.what!=="stars") {
+    r.mode="M"; r.shutter={dial:"125", text:"1/125 s"};
+    r.ap = ["things","docs"].includes(S.what) ? {v:"11", text:"f/8–f/11 — whole object sharp"} : {v:"8", text:"f/5.6–f/8 — start at f/8"};
+    r.iso="160"; r.isoFixed=true; r.comp="—"; r.drive="S"; r.timer=false;
+    if (S.what!=="motion" && S.what!=="kids" && S.what!=="pets") r.focus="S";
+    r.extra.push(P.mech, P.preview, P.wbSun);
+    r.why="In a studio the flashes set the exposure, not the camera: shutter, aperture and ISO are set manually, and you make it brighter or darker with flash power.";
+    r.tips.unshift("Put the trigger (radio transmitter) in the hot shoe on top. Don't pop up the built-in flash.");
+    r.tips.push("The first shot is a test. Too dark: raise flash power or open up to f/5.6. Too bright: the opposite. Don't touch ISO.");
+    r.tips.push("White balance: ☀ (DAYLIGHT). Studio flashes give daylight-balanced light, so color stays the same from shot to shot.");
+    r.tips.push("If the studio has continuous light (LED panels) instead of flashes, choose \"Evening, lamp light\": the regular tips apply there.");
+    r.warns.push("Shutter no faster than 1/180 s (125 max on the dial). At 250 and faster a black band appears across the frame. The electronic shutter doesn't work with flashes — MECHANICAL SHUTTER only.");
+    r.warns.push("Without PREVIEW EXP./WB IN MANUAL MODE → OFF, the screen in M mode will be almost black: the camera shows the shot without flashes. The item is in SCREEN SET-UP; its name may be abbreviated differently.");
+  }
+  if (r.shutter.dial==="A" && !r.isoFixed && L===0) r.warns.push("At night, watch the shutter speed on screen: handheld slower than 1/30 s means blur, even with OIS.");
+  if (["land","water"].includes(S.what) && (L===3 || (L===0 && tripod)) || (S.what==="street" && L===3))
+    r.tips.push(`Very contrasty light: bright sky or streetlights and dark shadows. To let the camera soften the contrast, set D RANGE PRIORITY → WEAK in bank ${r.bank} (MENU/OK → I.Q. → EDIT/SAVE CUSTOM SETTING). Then that bank's HIGHLIGHT TONE, SHADOW TONE and DR stop having an effect.`);
+  if (ind && L<=1 && S.what!=="stars") r.warns.push("Under lamps, use the mechanical shutter or you'll get banding: SHUTTER TYPE → MECHANICAL SHUTTER.");
+  return r;
+}
+
+function path(parts){ return `<span class="path">${parts.map(esc).join('<em>→</em>')}</span>`; }
+const apLabel = v => v==="A" ? "A" : "f/"+v;
+
+function renderTool(){
+  const whereEl=document.getElementById("where"), whatEl=document.getElementById("what");
+  const cur = WHERE.find(w=>w.id===S.where);
+  if (!S.place) S.place = cur && cur.indoor ? "in" : "out";
+  if (!cur || !!cur.indoor !== (S.place==="in")) S.where = S.place==="in" ? "lamps" : "shade";
+  if (S.what==="stars" && S.where!=="night") S.what="land";
+  document.querySelectorAll("#place button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.v===S.place)));
+  whereEl.innerHTML = WHERE.filter(w=>!!w.indoor===(S.place==="in")).map(w=>`<button type="button" class="chip" id="w-${w.id}" data-k="where" data-v="${w.id}" aria-pressed="${S.where===w.id}">${esc(w.l)}</button>`).join("");
+  whatEl.innerHTML = WHAT.map(w=>{ const dis = w.onlyNight && S.where!=="night";
+    return `<button type="button" class="chip" id="t-${w.id}" data-k="what" data-v="${w.id}" aria-pressed="${S.what===w.id}" ${dis?'disabled title="Outdoors at night only"':''}>${esc(w.t)}</button>`; }).join("");
+  document.querySelectorAll("#tripod button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.v===S.tripod)));
+
+  const r = advise(), W = WHERE.find(w=>w.id===S.where), T = WHAT.find(w=>w.id===S.what);
+  const modeName = {A:"Aperture priority", S:"Shutter priority", M:"Manual mode"}[r.mode];
+  const el = document.getElementById("result");
+  if (r.block) {
+    el.innerHTML = `<div class="card"><div class="head"><div class="mode">!</div><div><div class="where">${esc(W.t)}</div><h2>${esc(T.t)}</h2><p>You need a tripod first</p></div></div></div>
+      <div class="note block"><b>This won't work without a tripod.</b> ${esc(r.block)} Choose "I have a tripod".</div>`;
+    return;
+  }
+  const rot = [];
+  rot.push("<b>AUTO lever</b> (under the shutter speed dial) — move it off AUTO.");
+  rot.push(`<b>Shutter speed dial → ${esc(r.shutter.dial)}</b>${r.shutter.dial==="A"?" (the camera picks the shutter speed)":` (${esc(r.shutter.text)})`}.`);
+  if (r.zoom) rot.push(`<b>Zoom ring → ${esc(r.zoom)}.</b>`);
+  rot.push(r.ap.v==="A" ? "<b>Lens switch → A.</b> The camera picks the aperture."
+    : (r.ap.v==="2.8")
+      ? `<b>Lens switch → aperture icon, turn the ring all the way to the smallest numbers</b> (${esc(r.ap.text)}). Past that stop the ring won't change f — the brightest value depends on the zoom: 18 mm — f/2.8, 23 mm — f/3.2, 55 mm — f/4. That's normal for the 18–55 lens. If the ring doesn't change f in either direction, the switch is still on A.`
+      : `<b>Lens switch → aperture icon, ring → ${esc(apLabel(r.ap.v))}</b> (${esc(r.ap.text)}). Check the number on the screen. If the ring doesn't change f, the switch is still on A. The number changes as you zoom — that's normal: at 18 mm the brightest is f/2.8, at 55 mm only f/4.`);
+  rot.push(`<b>Focus lever on the front → ${r.focus}</b> (${ {S:"AF-S, for still subjects",C:"AF-C, follows movement",M:"manual focus"}[r.focus]}).`);
+  rot.push(`<b>DRIVE dial → ${r.drive}</b>${r.drive==="S"?" (single frame)":r.drive==="CL"?" (burst up to 5 fps)":" (burst at 8 fps)"}.`);
+  if (r.comp && r.comp!=="0" && r.comp!=="—") rot.push(`<b>Exposure compensation dial → ${esc(r.comp)}</b> (on the right of the top plate)${r.compWhy?", "+esc(r.compWhy):""}. One click is 1/3 stop: toward minus is darker, toward plus is brighter.`);
+  if (r.compLater) rot.push(`<b>Exposure compensation dial → 0.</b> ${esc(r.compLater.when)} — turn it to <b>${esc(r.compLater.v)}</b> (toward ${esc(r.compLater.to)}; one click is 1/3 stop)${r.compLater.back?", then set it back to 0":""}.`);
+
+  const oisOff = r.extra.includes(P.ois);
+  if (oisOff) rot.push("<b>OIS switch on the lens → OFF</b> — on a tripod the stabilizer gets in the way.");
+  const comp = r.comp && !r.comp.startsWith("0") && r.comp!=="—";
+  const compNote = r.comp && r.comp!=="0" && r.comp!=="—";
+  const menu = [P.bank(BANKS[r.bank]), P.iso(r.iso)];
+  if (r.focus!=="M") menu.push(P.afmode(r.af));
+  menu.push(P.face(r.face));
+  r.extra.filter(e=>e!==P.ois).forEach(e=>menu.push(e));
+  if (r.timer) menu.push(P.timer);
+
+  const summary = [r.mode, r.shutter.dial==="A"?"shutter auto":r.shutter.text, r.ap.v==="A"?"aperture auto":apLabel(r.ap.v)]
+    .concat(r.zoom?[r.zoom]:[]).concat(["ISO "+r.iso, {S:"AF-S",C:"AF-C",M:"MF"}[r.focus]])
+    .concat(r.drive!=="S"?[r.drive]:[]).concat(r.face?["EYE AUTO"]:[]).concat(r.timer?["2 s timer"]:[]).concat([r.bank]);
+
+  el.innerHTML = `
+  <div class="card">
+    <div class="head"><div class="mode">${r.mode}</div>
+      <div><div class="where">${esc(W.t)}</div><h2>${esc(T.t)}</h2><p>${esc(modeName)}. ${esc(r.why)}</p></div></div>
+    <div class="summary">${summary.map(s=>`<span>${esc(s)}</span>`).join("")}</div>
+  </div>
+  <div class="gauges">
+    <div class="g"><div class="lab">Shutter speed dial</div>${photo("top",["shutter_dial","auto","expcomp"],[
+        {k:"shutter_dial",color:RED,label:"→ "+r.shutter.dial,arc:true},
+        {k:"auto",color:RED,label:"not AUTO"}].concat(comp?[{k:"expcomp",color:YEL,ink:"#1D1F22",label:"comp. "+r.comp.split(" ")[0]}]:[]),{alt:"Shutter speed dial",pad:.1})}
+      <div class="val">${esc(r.shutter.dial)}</div><div class="sub">${esc(r.shutter.text)}${compNote?" · compensation "+esc(r.comp):""}${r.compLater?" · compensation 0":""}</div></div>
+    <div class="g"><div class="lab">18–55 lens</div>${photo("lens",null,[
+        {k:"a_switch",color:RED,label:r.ap.v==="A"?"→ A":"→ ◎",fs:6.5}]
+        .concat(r.ap.v!=="A"?[{k:"aperture_ring",color:RED,label:"ring → "+apLabel(r.ap.v)}]:[])
+        .concat(r.zoom?[{k:"zoom",color:RED,label:"zoom → "+r.zoom,at:"top"}]:[])
+        .concat(oisOff?[{k:"ois",color:YEL,ink:"#1D1F22",label:"OFF",fs:6.5}]:[]),{alt:"Lens"})}
+      <div class="val">${esc(apLabel(r.ap.v))}${r.zoom?" · "+esc(r.zoom):""}</div><div class="sub">${esc(r.ap.text)}</div></div>
+    <div class="g"><div class="lab">Focus lever</div>${photo("front",["focus_sel"],[{k:"focus_sel",color:RED,label:"→ "+r.focus}],{alt:"Focus lever",state:{focus:r.focus},pad:.9})}
+      <div class="val">${r.focus}</div><div class="sub">${esc(r.focus==="M"?"manual":"AF MODE: "+r.af)}</div></div>
+    <div class="g"><div class="lab">DRIVE dial</div>${photo("top",["drive","flash"],[{k:"drive",color:RED,label:"→ "+r.drive,arc:true}],{alt:"DRIVE dial",pad:.25})}
+      <div class="val">${r.drive}</div><div class="sub">ISO ${esc(r.iso)}</div></div>
+  </div>
+  <div class="twocol">
+    <div class="card"><h3><i style="background:var(--rot)"></i>Turn on the camera</h3><ol class="steps">${rot.map(s=>`<li class="r"><div>${s}</div></li>`).join("")}</ol></div>
+    <div class="card"><h3><i style="background:var(--press)"></i>Set in the menu</h3><ol class="steps">${menu.map(m=>`<li class="p"><div>${path(m)}</div></li>`).join("")}</ol>
+      <div class="menuph">${photo("rear",["q","menu","stick","disp"],[{k:"q",color:BLUE,num:1},{k:"menu",color:BLUE,num:2},{k:"stick",color:BLUE,num:3},{k:"disp",color:BLUE,num:4}],{alt:"Menu buttons",pad:.35,aspect:3/4})}</div><p class="hint" style="margin-top:6px">1 — Q, 2 — MENU/OK, 3 — joystick: scroll and select, 4 — DISP/BACK: back.</p><p class="hint" style="margin-top:8px">Set ${esc(r.bank)} includes the film simulation and picture tones — create it once on the "C1–C7 sets" tab.</p></div>
+  </div>
+  ${shotBlock(S.what, W)}
+  ${(r.tips.length||r.warns.length)?`<div class="card notes"><h3><i style="background:var(--ok)"></i>Tips</h3>
+    ${r.tips.map(t=>`<div class="note tip"><b>Tip.</b> ${esc(t)}</div>`).join("")}
+    ${r.warns.map(t=>`<div class="note warn"><b>Heads up.</b> ${esc(t)}</div>`).join("")}</div>`:""}`;
+}
+
+/* ---------- menu explainer (from the user's own screens) ---------- */
+const MENU = [
+ {h:"DIALS AND MODES ON THE BODY", sub:"What each position means. No menu needed.", rows:[
+  ["MODES P / A / S / M","Who picks the shutter speed and aperture.","","A — almost always","info","The mode comes from the shutter speed dial position and the lens switch.",[["P — program","Shutter speed dial on A, lens switch on A: the camera picks everything, you pick ISO and compensation."],["A — aperture priority","Shutter speed dial on A, aperture set with the ring. You control background blur."],["S — shutter priority","Shutter speed set with the dial, lens on A. Freeze or blur motion."],["M — manual","Both shutter speed and aperture are up to you. For night, studio, panoramas."],["AUTO lever","Set to AUTO — scene modes; other settings don't apply."]]],
+  ["DRIVE DIAL","Bursts, bracketing, effects, video.","","S / CL / CH","info","",[["S","Single frame."],["CL","Slow burst, up to 5 fps."],["CH","Fast burst, 8 fps with the mechanical shutter."],["BKT1 / BKT2","Bracketing: several frames with different exposure, ISO, film simulation, white balance or DR — chosen in DRIVE SETTING."],["Panorama","Move the camera along the arrow — it stitches a panorama."],["Adv1 / Adv2","Filters: toy camera, miniature, partial color, pop color and more."],["Video","Records video with the shutter button."]]],
+  ["FOCUS LEVER S / C / M","On the front of the body, next to the lens.","","S or C depending on the subject","info","",[["S (AF-S)","Focuses once on a half-press and holds. For still subjects."],["C (AF-C)","Focus keeps following the subject while you hold the button. For movement."],["M","Manual focus with the lens ring, with focus peaking."]]],
+  ["EXPOSURE COMPENSATION DIAL","Top right, from −3 to +3.","","0, adjust as the helper suggests","info","One click is 1/3 stop. At C, compensation is set with the front dial, up to ±5.",[["−","Darker shot: snow isn't gray, sunsets don't blow out."],["+","Brighter shot: a backlit face, a white background."]]],
+ ]},
+ {h:"I.Q. — IMAGE QUALITY SETTING", sub:"What the file looks like: size, format, color.", rows:[
+  ["IMAGE SIZE","Frame size and aspect ratio.","L 16:9","L 3:2","change","16:9 crops the top and bottom of the sensor. 3:2 is the full 26 MP frame."],
+  ["IMAGE QUALITY","JPEG only or JPEG + RAW.","F","F+RAW","change","RAW gives you room to rescue blown highlights and color. If you don't edit photos, leave it on F."],
+  ["RAW RECORDING","RAW file compression.","LOSSLESS COMPRESSED","LOSSLESS COMPRESSED","keep","Lossless compression: smaller file, same quality."],
+  ["FILM SIMULATION","JPEG color profile.","STD (PROVIA)","per set","preset","PROVIA, Velvia, ASTIA, CLASSIC CHROME, PRO Neg., ETERNA, ACROS. The X-T30 has no Classic Neg."],
+  ["MONOCHROMATIC COLOR (WARM/COOL)","Warm or cool tint for B&W.","0","0","keep","Only for ACROS and MONOCHROME; it doesn't appear in color sets. Scale −9…+9: plus is warm, like sepia; minus is cool, bluish."],
+  ["GRAIN EFFECT","Film grain.","OFF","per set","preset","Weak — in the \"Street\" and \"B&W\" sets."],
+  ["COLOR CHROME EFFECT","Deeper tones in saturated colors.","OFF","per set","preset","Weak — for landscapes and flowers."],
+  ["WHITE BALANCE","Keeps colors neutral under different light.","AUTO","AUTO","keep","Custom — for product shots and lamps."],
+  ["DYNAMIC RANGE","Protects highlights from blowing out.","DR100","per set","preset","200% only from ISO 320, 400% from ISO 640."],
+  ["D RANGE PRIORITY","Softens contrast automatically.","OFF","OFF (in sets too)","preset","It's also set in each C1–C7 set. If you turn it on, tones and DR can no longer be set manually."],
+  ["HIGHLIGHT TONE / SHADOW TONE","Contrast of bright and dark areas, −2…+4.","0 / 0","per set","preset","Minus is softer, plus is more contrasty."],
+  ["COLOR","Saturation, −4…+4.","0","per set","preset",""],
+  ["SHARPNESS","Edge crispness, −4…+4.","0","per set","preset",""],
+  ["NOISE REDUCTION","JPEG noise reduction, −4…+4.","0","per set (−1)","preset","−1 avoids \"plastic\" skin."],
+  ["LONG EXPOSURE NR","Cleans noise at exposures of several seconds.","ON","ON","keep","After a night shot the camera \"thinks\" for as long as the exposure lasted. That's normal."],
+  ["LENS MODULATION OPTIMIZER","Adds sharpness toward the frame edges.","ON","ON","keep",""],
+  ["COLOR SPACE","sRGB or Adobe RGB.","sRGB","sRGB","keep","Adobe RGB — only for professional printing."],
+  ["PIXEL MAPPING","Removes stuck bright pixels.","—","leave alone","rare","Only if the same bright dot shows up in every shot."],
+  ["SELECT CUSTOM SETTING / EDIT/SAVE CUSTOM SETTING","C1–C7 sets.","BASE","see the \"Sets\" tab","preset",""],
+ ]},
+ {h:"AF/MF — AF/MF SETTING", sub:"How the camera focuses.", rows:[
+  ["FOCUS AREA","Where the focus point sits.","—","move it with the joystick","keep","The joystick is faster than the menu."],
+  ["AF MODE","Single point, zone or tracking.","SINGLE POINT","SINGLE POINT","keep","ZONE — for kids and movement (the helper will tell you when)."],
+  ["AF-C CUSTOM SETTINGS","How to follow a moving subject.","—","SET 1","keep","SET 3 — for kids and sports with sudden moves."],
+  ["STORE AF MODE BY ORIENTATION","A separate point for vertical shots.","FOCUS AREA ONLY","OFF","change","Easier for beginners when the point doesn't \"jump\" as you turn the camera."],
+  ["AF POINT DISPLAY","Show the points inside a zone.","ON","ON","keep",""],
+  ["NUMBER OF FOCUS POINTS","117 or 425 points.","117","117","keep","Fewer points — faster to move with the joystick."],
+  ["PRE-AF","Keeps focusing all the time, even without pressing.","ON","OFF","change","Drains the battery fast, and the speed gain is small."],
+  ["AF ILLUMINATOR","A lamp helps focus in the dark.","ON","ON","keep","Turn it off in theaters and around animals."],
+  ["FACE/EYE DETECTION SETTING","Focuses on a person's eye.","eye icon","FACE ON + EYE AUTO","keep","For landscapes and objects — OFF: while it's on, PHOTOMETRY doesn't apply."],
+  ["AF+MF","Fine-tune focus with the ring after autofocus.","OFF","OFF","keep","Turn it on for product shots."],
+  ["MF ASSIST","Help for manual focus (lever on M).","STANDARD","FOCUS PEAK HIGHLIGHT → RED (HIGH)","change","Sharp edges get a red highlight. Picking a color in the FOCUS PEAK HIGHLIGHT line also turns the highlight on. Quick switch: press and hold the center of the rear dial."],
+  ["FOCUS CHECK","Zooms in when you turn the focus ring.","ON","ON","keep",""],
+  ["INTERLOCK SPOT AE & FOCUS AREA","Meters at the focus point.","ON","ON","keep","Works only with spot metering."],
+  ["INSTANT AF SETTING","How AF-L focuses with the lever on M.","AF-S","AF-S","keep",""],
+  ["DEPTH-OF-FIELD SCALE","How depth of field is calculated.","PIXEL BASIS","PIXEL BASIS","keep",""],
+  ["RELEASE/FOCUS PRIORITY","Whether to shoot before focus is locked.","—","AF-S: focus · AF-C: release","change","In AF-S you won't get out-of-focus shots; in AF-C you won't miss the moment."],
+  ["TOUCH SCREEN MODE","What tapping the screen does.","SHOT (tap = photo)","area (tap = focus point)","change","Otherwise your finger fires accidental shots."],
+ ]},
+ {h:"📷 SHOOTING SETTING", sub:"Bursts, self-timer, shutter, ISO.", rows:[
+  ["SCENE POSITION","Scene modes.","P","leave alone","rare","Work only with the AUTO lever."],
+  ["DRIVE SETTING","CH / CL burst speed, bracketing.","—","CH 8 fps · CL 5 fps","keep","10–30 fps — electronic shutter only, with distortion."],
+  ["SPORTS FINDER MODE","1.25× crop for sports.","OFF","OFF","keep",""],
+  ["PRE-SHOT ES","Starts shooting before a full press.","OFF","OFF","keep",""],
+  ["SELF-TIMER","Shutter release delay.","OFF","OFF","keep","2 SEC — on a tripod. Resets when you turn the camera off."],
+  ["INTERVAL TIMER SHOOTING","Time-lapse.","—","not needed","rare",""],
+  ["PHOTOMETRY","How the camera measures light.","MULTI","MULTI","keep","Doesn't apply while face detection is on."],
+  ["SHUTTER TYPE","Mechanical or electronic.","MECHANICAL + ELECTRONIC","MECHANICAL SHUTTER","change","Predictable: no banding under lamps, and the flash always fires. Electronic — for silent shooting."],
+  ["FLICKER REDUCTION","Fights lamp flicker.","OFF","OFF","keep","Works only with the mechanical shutter and slows down recording."],
+  ["IS MODE","OIS stabilizer in the 18–55 lens.","continuous","continuous · OFF on a tripod","keep","The X-T30 body has no stabilizer — only the lens does."],
+  ["ISO","Sensitivity.","AUTO3","AUTO1/2/3 depending on the subject","preset","Set up the presets using the table on the \"C1–C7 sets\" tab."],
+  ["MOUNT ADAPTOR SETTING","For old lenses via the M mount adapter.","21mm","leave alone","rare","Doesn't affect the 18–55."],
+  ["WIRELESS COMMUNICATION","Connection to a smartphone.","—","for FUJIFILM Camera Remote","rare","Use your phone as a remote — handy for night shots on a tripod."],
+ ]},
+ {h:"ϟ FLASH SETTING", sub:"Built-in and external flash.", rows:[
+  ["FLASH FUNCTION SETTING","Mode, sync, power.","—","TTL, power −1","keep","In the evening — slow sync: the background isn't black."],
+  ["RED EYE REMOVAL","Against red eyes.","OFF","flash + removal","change","For people with flash. Doesn't apply to RAW."],
+  ["TTL-LOCK MODE","Locks the flash power.","LOCK ON LAST FLASH","leave alone","rare","Works only with the TTL-LOCK button."],
+  ["LED LIGHT SETTING","External flash LED.","—","not needed","rare",""],
+  ["MASTER SETTING / CH SETTING","Wireless flashes.","—","not needed","rare",""],
+ ]},
+];
+/* ---------- all options, for the "all options" explainer ---------- */
+const OPTS = {
+ "IMAGE SIZE":[["L / M / S","Size in pixels: 26 / 14 / 6.5 MP at 3:2. M and S only if your card is short on space."],["3:2","The full sensor frame, like film."],["16:9","Wide frame for screens; top and bottom are cropped."],["1:1","Square; edges are cropped."]],
+ "IMAGE QUALITY":[["FINE (F)","High-quality JPEG."],["NORMAL (N)","JPEG with more compression, smaller file."],["FINE+RAW / NORMAL+RAW","JPEG and RAW together: a finished photo plus room for editing."],["RAW","RAW only, needs a converter (you can do it in the camera: ▶ → MENU/OK → RAW CONVERSION)."]],
+ "FILM SIMULATION":[["PROVIA/STANDARD","Natural colors for everything."],["Velvia/VIVID","Saturated colors and contrast — landscapes, nature. Too strong for faces."],["ASTIA/SOFT","Soft contrast, pleasant skin, but colors stay lively."],["CLASSIC CHROME","Muted colors, dense shadows — street, documentary look."],["PRO Neg. Hi","For portraits: soft skin tones, a bit more contrast."],["PRO Neg. Std","The softest and most even — studio portraits, room for editing."],["ETERNA/CINEMA","Cinematic, calm color, very soft contrast — video and mood."],["ACROS (+Ye, +R, +G)","The best B&W in the camera: deep shadows, fine grain. Filters: Ye — slightly darker sky, R — dramatic sky, G — softer skin."],["MONOCHROME (+Ye, +R, +G)","Simple B&W, softer than ACROS."],["SEPIA","The brown tone of an old photo."]],
+ "GRAIN EFFECT":[["OFF","Clean image."],["WEAK","Light film grain."],["STRONG","Visible grain, like old film."]],
+ "COLOR CHROME EFFECT":[["OFF","As usual."],["WEAK","More shades in saturated colors: sky, foliage, flowers."],["STRONG","Same, but stronger. Can make skin look heavy."]],
+ "WHITE BALANCE":[["AUTO","The camera makes white look white. Works almost always."],["CUSTOM 1–3","Measured from a white sheet under your light — the most accurate color for product shots."],["K (COLOR TEMPERATURE)","A number in kelvins: 3200 — incandescent lamps, 5500 — daylight and flash."],["☀ DAYLIGHT","For sun and studio flash; keeps the gold at sunset."],["SHADE","Removes the blue cast in shade, makes it warmer."],["FLUORESCENT LIGHT 1–3","For different fluorescent lamps."],["INCANDESCENT","Removes the strong yellow of warm lamps."],["UNDERWATER","For an underwater housing."]],
+ "DYNAMIC RANGE":[["AUTO","The camera picks 100 or 200% itself."],["DR100","No protection — clean shadows, any ISO."],["DR200","Protects highlights by 1 stop. From ISO 320."],["DR400","By 2 stops, for very contrasty scenes. From ISO 640."]],
+ "D RANGE PRIORITY":[["OFF","Tones and DR are set manually."],["WEAK / STRONG","The camera softens contrast itself: brighter shadows, darker highlights."],["AUTO","Strength depends on the scene."]],
+ "AF MODE":[["SINGLE POINT","Focuses exactly where you put the point. Size — with the rear dial."],["ZONE","A group of points: the camera picks within it. For kids and animals."],["WIDE/TRACKING","The camera finds the subject anywhere in the frame and follows it in AF-C."],["ALL","Switch modes with the rear dial while shooting."]],
+ "AF-C CUSTOM SETTINGS":[["SET 1","All-purpose, for most movement."],["SET 2","Ignores obstacles crossing the frame."],["SET 3","For a subject that speeds up and slows down suddenly."],["SET 4","For a subject that suddenly appears in the frame."],["SET 5","For sudden sideways moves: sports, games, animals."],["SET 6","Your own set of parameters."]],
+ "FACE/EYE DETECTION SETTING":[["FACE ON/EYE AUTO","The camera finds a face and picks the nearer eye itself."],["RIGHT/LEFT EYE PRIORITY","Always focuses on the chosen eye."],["FACE ON/EYE OFF","Face only, no eyes."],["FACE OFF/EYE OFF","Off — for landscapes, objects, animals."]],
+ "PHOTOMETRY":[["MULTI","Analyzes the whole frame. Almost always the best."],["CENTER WEIGHTED","The whole frame, but the center counts more."],["AVERAGE","Average over the whole frame."],["SPOT","A small area in the center (or at the focus point): stage, backlight."]],
+ "SHUTTER TYPE":[["MECHANICAL SHUTTER","Classic shutter: no distortion or banding, works with flash. Up to 1/4000 s."],["ELECTRONIC SHUTTER","Silent and up to 1/32000 s, but motion and lamps cause distortion and banding, and flash doesn't work."],["MECHANICAL + ELECTRONIC","Mechanical, switching to electronic at speeds faster than 1/4000."]],
+ "IS MODE":[["CONTINUOUS","The stabilizer works all the time — the viewfinder image is steadier."],["SHOOTING ONLY","Turns on when you press the shutter button, uses less battery."],["OFF","On a tripod."]],
+ "SELF-TIMER":[["2 SEC","Avoids shake from pressing the button on a tripod."],["10 SEC","Time to get into the shot."],["OFF","It resets anyway when you turn the camera off."]],
+ "FLASH FUNCTION SETTING":[["TTL","The camera works out the flash power. Adjust with ±, e.g. −1."],["M (MANUAL)","You set the power: 1/1, 1/2 … 1/64."],["1ST CURTAIN","Flash at the start of the exposure — the normal mode."],["2ND CURTAIN","At the end: motion trails appear behind the subject."],["SLOW SYNC","Long exposure + flash: both the person and the evening background show."],["COMMANDER","The built-in flash triggers external flashes with light."]],
+};
+const BADGE = {change:"important", keep:"default", preset:"in C1–C7 sets", rare:"leave alone", info:"reference"};
+function renderMenu(){
+  document.getElementById("menuList").innerHTML = MENU.map(g=>`<div class="card mgroup"><h2>${esc(g.h)}</h2><p class="sub">${esc(g.sub)}</p>
+    <div class="mrows">${g.rows.map(([nm,what,now,set,fl,why,op])=>{ const o = op || OPTS[nm];
+      return `<div class="mrow ${fl}">
+      <div class="nm"><span class="badge ${fl}">${BADGE[fl]}</span><br>${esc(nm)}</div>
+      <div class="wh">${esc(what)}${why?`<small>${esc(why)}</small>`:""}</div>
+      <div class="set"><span class="k">${fl==="info"?"usually":"recommended"}</span><b>${esc(set)}</b></div>
+      ${o?`<details class="opts"><summary>All options (${o.length})</summary><dl>${o.map(([a,b])=>`<div><dt>${esc(a)}</dt><dd>${esc(b)}</dd></div>`).join("")}</dl></details>`:""}</div>`;}).join("")}</div></div>`).join("");
+}
+
+/* ---------- custom banks ---------- */
+const SETS_COLS = ["C1 PORTRAIT","C2 MOTION","C3 STREET","C4 LANDSCAPE","C5 NIGHT","C6 B&W","C7 OBJECTS"];
+const SETS_ROWS = [
+ ["ISO","AUTO1","AUTO2","AUTO2","AUTO3","160","AUTO1","AUTO1"],
+ ["DYNAMIC RANGE","AUTO","AUTO","200%","200%","100%","100%","100%"],
+ ["D RANGE PRIORITY","OFF","OFF","OFF","OFF","OFF","OFF","OFF"],
+ ["FILM SIMULATION","PRO Neg. Hi","PROVIA","CLASSIC CHROME","Velvia","CLASSIC CHROME","ACROS+Ye","PROVIA"],
+ ["MONOCHROMATIC COLOR (WARM/COOL)","—","—","—","—","—","0","—"],
+ ["GRAIN EFFECT","OFF","OFF","WEAK","OFF","OFF","WEAK","OFF"],
+ ["COLOR CHROME EFFECT","OFF","OFF","WEAK","WEAK","OFF","—","OFF"],
+ ["WHITE BALANCE","AUTO","AUTO","AUTO","AUTO","AUTO","AUTO","AUTO"],
+ ["HIGHLIGHT TONE","−1","0","0","−1","−1","0","0"],
+ ["SHADOW TONE","−1","0","+1","0","0","+2","0"],
+ ["COLOR","−1","0","+1","0","0","—","0"],
+ ["SHARPNESS","0","0","+1","+1","0","+1","+1"],
+ ["NOISE REDUCTION","−1","−1","−2","−1","0","−2","0"],
+];
+function renderSets(){
+  document.getElementById("setsTable").innerHTML = `<tr><th>Setting</th>${SETS_COLS.map(c=>`<th><span class="bank">${esc(c.split(" ")[0])}</span> ${esc(c.split(" ").slice(1).join(" "))}</th>`).join("")}</tr>`
+   + SETS_ROWS.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join("")}</tr>`).join("");
+}
+
+
+/* ---------- camera map ---------- */
+const MAP = [
+ {ph:"top", t:"Top", items:[
+  ["drive",RED,"DRIVE dial","S — single shot, CL/CH — bursts, BKT — bracketing, Adv — filters, video"],
+  ["flash",RED,"Flash lever","Slide it and the built-in flash pops up"],
+  ["zoom",RED,"Zoom ring","18 mm — wide, 55 mm — close-up"],
+  ["hotshoe",RED,"Hot shoe","For an external flash"],
+  ["shutter_dial",RED,"Shutter speed dial","A — the camera picks the shutter speed, T — long exposures with the rear dial"],
+  ["auto",RED,"AUTO lever","Move it off AUTO so your settings take effect"],
+  ["onoff",BLUE,"Shutter button and ON/OFF","The ring around the button turns the camera on"],
+  ["fn",BLUE,"Fn1","A button you can assign a function to"],
+  ["expcomp",RED,"Exposure compensation","+ brighter, − darker; C — front dial, up to ±5"]]},
+ {ph:"rear", t:"Back", items:[
+  ["delete",BLUE,"Delete",""],["play",BLUE,"Playback",""],["evf",RED,"Viewfinder","The diopter wheel is to its left"],
+  ["view",BLUE,"VIEW MODE","Screen or viewfinder"],["ael",BLUE,"AE-L","Lock exposure"],
+  ["rear_dial",RED,"Rear dial","Shutter speed in T mode, focus point size"],["afl",BLUE,"AF-L","Lock focus"],
+  ["q",BLUE,"Q","Quick menu and banks C1–C7"],["stick",BLUE,"Focus stick","Moves the focus point, scrolls menus"],
+  ["menu",BLUE,"MENU/OK","Menu and confirm"],["disp",BLUE,"DISP/BACK","Screen layout and “back”"],
+  ["lcd",RED,"Screen","Touchscreen, tilts up and down"]]},
+ {ph:"lens", t:"XF 18–55 lens", items:[
+  ["zoom",RED,"Zoom ring","Numbers 18…55 — focal length"],
+  ["aperture_ring",RED,"Aperture ring","No markings: the f/ value shows on the screen"],
+  ["ois",RED,"OIS ON/OFF","Lens stabilizer. OFF — only on a tripod"],
+  ["a_switch",RED,"A / ◎ switch","A — the camera picks the aperture, ◎ — you set it with the ring"]]},
+ {ph:"front", t:"Front", items:[
+  ["front_dial",RED,"Front dial","Compensation when set to C, ISO — if assigned"],
+  ["af_lamp",BLUE,"AF illuminator","Helps focus in the dark, blinks during the self-timer"],
+  ["mount",RED,"Lens mount","Line the lens up with the red dot and turn until it clicks"],
+  ["release",BLUE,"Lens release button","Press and turn the lens to remove it"],
+  ["focus_sel",RED,"Focus lever S · C · M","S — focus for still subjects, C — tracks movement, M — manual"]]},
+];
+function renderMap(){
+  document.getElementById("mapList").innerHTML = MAP.map(g0=>{const g=Object.assign({},g0,{items:g0.items.filter(it=>PH[src(g0.ph)].spots[it[0]])}); return `<div class="card mapcard"><h2>${esc(g.t)}</h2>
+    ${photo(g.ph,S.style==="photo"?null:(g.vb||null),g.items.map((it,i)=>({k:it[0],color:it[1],num:i+1})),{dim:false,alt:g.t})}
+    <ol class="keylist">${g.items.map((it,i)=>`<li><span class="kn" style="background:${it[1]}">${i+1}</span><div><b>${esc(it[2])}</b>${it[3]?`<small>${esc(it[3])}</small>`:""}</div></li>`).join("")}</ol></div>`;}).join("");
+}
+
+function setTab(t){
+  S.tab=t;
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected", String(b.dataset.tab===t)));
+  for (const p of ["tool","map","menu","sets"]) document.getElementById("pane-"+p).hidden = p!==t;
+}
+function save(){ try { localStorage.setItem("xt30-pick2", JSON.stringify(S)); } catch(e) {} }
+
+document.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if (!b || b.disabled || !b.closest("#app")) return;
+  if (b.dataset.tab) { setTab(b.dataset.tab); save(); return; }
+  if (b.dataset.k) S[b.dataset.k]=b.dataset.v;
+  else if (b.parentElement.id==="tripod") S.tripod=b.dataset.v;
+  else if (b.parentElement.id==="place") S.place=b.dataset.v;
+  else if (b.parentElement.id==="style") { S.style=b.dataset.v; save(); renderStyle(); renderTool(); renderMap(); return; }
+  else return;
+  save(); renderTool();
+}, {signal: window.__AC.signal});
+function renderStyle(){ document.querySelectorAll("#style button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.v===S.style))); }
+renderStyle(); renderTool(); renderMap(); renderMenu(); renderSets(); setTab(S.tab);
+};
+</script>
+<script>
+(function(){
+  const TITLE={ru:"Подсказчик X-T30", en:"X-T30 Settings Helper"};
+  function pick(){ try{ const v=localStorage.getItem("xt30-lang"); if(v==="ru"||v==="en") return v; }catch(e){}
+    return /^(ru|uk|be|kk)/i.test(navigator.language||"") ? "ru" : "en"; }
+  function load(lang){
+    if (window.__AC) window.__AC.abort();
+    window.__AC = new AbortController();
+    const app=document.getElementById("app");
+    app.innerHTML=""; app.appendChild(document.getElementById("tpl-"+lang).content.cloneNode(true));
+    document.documentElement.lang=lang; document.title=TITLE[lang];
+    window["__APP_"+lang]();
+    document.querySelectorAll("#lang button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.lang===lang)));
+  }
+  document.addEventListener("click", e=>{
+    const b=e.target.closest("button"); if(!b) return;
+    if (b.dataset.lang){ try{ localStorage.setItem("xt30-lang", b.dataset.lang); }catch(err){} load(b.dataset.lang); return; }
+    if (b.dataset.copy){
+      const txt=b.dataset.copy, done=()=>{ const o=b.textContent; b.textContent=b.dataset.done; setTimeout(()=>{ b.textContent=o; },1800); };
+      const sel=()=>{ const m=b.parentElement.querySelector(".mail"); if(!m) return; const r=document.createRange(); r.selectNodeContents(m); const s=getSelection(); s.removeAllRanges(); s.addRange(r); };
+      try { navigator.clipboard.writeText(txt).then(done, sel); } catch(err){ sel(); }
+    }
+  });
+  load(pick());
+})();
 </script>
 
 </body>
